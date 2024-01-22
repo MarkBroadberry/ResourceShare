@@ -1,0 +1,98 @@
+body{
+  font-family: Verdana, Geneva, Tahoma, sans-serif
+}
+.CenterForm {
+    width: 33.33%;
+    margin-top: 10% ;
+    /*margin : 10% auto;*/
+    min-height: 45%;
+    margin-left: 33%;
+    padding: 2%;
+    border: 1px solid grey;
+    border-radius: 10%;
+    text-align: center;
+    display: block;
+}
+
+.LoginTitle {
+    font-family:Verdana, Geneva, Tahoma, sans-serif;
+}
+
+
+.LoginButton {
+  background-color: #0a6bff;
+  border-radius: 4px;
+  color: #fff;
+  cursor: pointer;
+  display: inherit;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 24px;
+  left: 32.5%;
+  min-height: 56px;
+  width: 35%;
+  padding: 16px 20px;
+  position: relative;
+  text-align: center;
+  user-select: none;
+  vertical-align: baseline;
+  transition: all .2s cubic-bezier(.22, .61, .36, 1);
+  margin-top: 5%;
+  float: right;
+}
+
+.LoginButton:hover {
+  background-color: #065dd8;
+  transform: translateY(-2px);
+}
+
+
+.storageInfoTest{
+    margin: 10% auto;
+}
+
+.LoginError{
+  width: 75%;
+  height: 5%;
+  background-color: rgba(255,0,0,.2);
+  color: #312e2e;
+  border-radius: 10%;
+  border: 1px solid red; 
+  margin-left: 12.5%;
+  padding-top: auto;
+}
+
+.RegisterMessage{
+  width: 37.33%;
+  margin-left: 33%;
+  text-align: right;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.UserInfo{
+  margin: 7% auto;
+}
+
+.ModuleList{
+  border: 2px solid rgb(190, 190, 190);
+  border-radius: 25px;
+  max-width: 60%;
+  margin-left: 20%;
+  box-shadow: 10px 5px 5px #5841dc;
+  margin-bottom: 2%;
+  overflow-x: auto;
+
+}
+
+.individualModule{
+  border: 1px solid rgb(177, 175, 175);
+  border-radius: 25px;
+  padding: 1%;
+  text-align: center;
+  display: inline-block;
+}
+.ModuleResourceTitles{
+  margin-top: 7%;
+  text-align: left;
+}
