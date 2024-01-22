@@ -73,7 +73,7 @@ export default function Homepage(){
                     {modules.map(function(module, i){
                         return <ListItem key={i}>{module.name} 
                             <Button onClick={() => handleRedirect(module)}>
-                                See Resources
+                                See File Resources
                             </Button>
                         </ListItem>
                     })}
