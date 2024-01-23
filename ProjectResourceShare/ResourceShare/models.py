@@ -33,6 +33,14 @@ class Module(models.Model):
         return self.name
     
 
+class Resource(models.Model):
+    name = models.CharField(max_length=256)
+    description = models.CharField(max_length=512)
+    resource = models.FileField(upload_to="uploads/")
+    module = models.ForeignKey(Module, on_delete=models.CASCADE)
+    author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    
+
     
 
 

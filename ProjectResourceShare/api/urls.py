@@ -16,6 +16,5 @@ urlpatterns = [
     path('getUniversity/', views.GetUniversityView.as_view(), name = 'getUniversity'),
     path('getUserDetail/', views.GetUserDetailView.as_view(), name = 'getUserDetail'),
     path('createModule/', views.CreateModuleView.as_view(), name = 'createModule'),
-
-
+    path('resourceUpload/', views.ResourceUploadView.as_view(), name = 'resourceUpload'),
 ]

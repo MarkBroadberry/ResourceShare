@@ -59,7 +59,7 @@ export default function Homepage(){
        })
     }
 
-    const handleRedirect = (chosenModule) => navigate('/ModuleResources',{state:{id: chosenModule.id, name: chosenModule.name}})
+    const handleRedirect = (chosenModule) => navigate('/ModuleResources',{state: chosenModule/*{id: chosenModule.id, name: chosenModule.name}*/})
 
     return(
         <div className = "UserInfo">

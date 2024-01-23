@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework import generics, status
-from .serializers import ModuleSerializer, UserSerializer, MyTokenObtainPairSerializer, UniversitySerializer
+from .serializers import ModuleSerializer, UserSerializer, MyTokenObtainPairSerializer, UniversitySerializer, ResourceSerializer
 from ResourceShare.models import Module, CustomUser, University
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -115,4 +115,15 @@ class CreateModuleView(APIView):
             logger.error(f"An error occurred: {e}")
             return Response(status=status.HTTP_400_BAD_REQUEST)
         
-        #TODO: pop university and user out of the serializer and handle them in the same way as creating a user.
+class ResourceUploadView(APIView):
+    serializer_class = ResourceSerializer
+    def post(self, request):
+        try:
+            serializer = self.serializer_class(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            logger.error(f"An error occurred: {e}")
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+

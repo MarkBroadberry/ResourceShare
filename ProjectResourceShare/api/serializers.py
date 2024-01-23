@@ -116,3 +116,12 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         data['user'] = str(self.user)
         #add other fields here that will be put into local storage and accessed from client. 
         return data
+    
+
+class ResourceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Resource
+        fields = '__all__'
+    def create(self, validated_data):
+        resource = models.Resource.objects.create(**validated_data)
+        return resource
