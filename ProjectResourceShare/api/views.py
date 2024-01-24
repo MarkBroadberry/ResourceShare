@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import generics, status
 from .serializers import ModuleSerializer, UserSerializer, MyTokenObtainPairSerializer, UniversitySerializer, ResourceSerializer
-from ResourceShare.models import Module, CustomUser, University
+from ResourceShare.models import Module, CustomUser, University, Resource
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -32,12 +32,38 @@ class LogoutBlacklistView(APIView):
             token.blacklist()
             return Response(status=status.HTTP_205_RESET_CONTENT) 
         except Exception as e:
+            logger.info("logout error: ", e)
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 #API view to return all Modules. 
 class ModuleView(generics.ListAPIView):
     queryset = Module.objects.all()
     serializer_class = ModuleSerializer
+
+class CurrentUserModuleView(APIView):
+    serializer_class = ModuleSerializer
+
+    def get(self, request):
+        user = self.request.user
+        modules = Module.objects.filter(students=user)
+        serializer = self.serializer_class(modules, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+class CreateModuleView(APIView):
+    def post(self, request):
+        try:
+            serializer = ModuleSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        except ValidationError as e:
+            print(f"An error occurred: {e}")
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        
 
 #API view to create user, and instantiate university / associate with existing university. 
 class CreateUserView(APIView):
@@ -54,22 +80,6 @@ class CreateUserView(APIView):
         except Exception as e:
             print(f"An error occurred: {e}")
             return Response(status=status.HTTP_400_BAD_REQUEST)
-        
-class CreateModuleView(APIView):
-    def post(self, request):
-        try:
-            serializer = ModuleSerializer(data=request.data)
-            serializer.is_valid(raise_exception=True)
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        except ValidationError as e:
-            print(f"An error occurred: {e}")
-            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-        except Exception as e:
-            print(f"An error occurred: {e}")
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-        
-
 
 class GetUniversityView(APIView):
     serializer_class = UniversitySerializer
@@ -126,4 +136,18 @@ class ResourceUploadView(APIView):
         except Exception as e:
             logger.error(f"An error occurred: {e}")
             return Response(status=status.HTTP_400_BAD_REQUEST)
+        
+class ResourcesForModuleView(APIView):
+    serializer_class = ResourceSerializer
+
+    def get(self, request, moduleId):
+        try:
+            resource = Resource.objects.filter(module=moduleId)
+            serializer = self.serializer_class(resource)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except resource.DoesNotExist:
+            return Response({"error": "resource not found"}, status = status.HTTP_404_NOT_FOUND)
+        
+
+
 

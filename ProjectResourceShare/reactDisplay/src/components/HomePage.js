@@ -41,7 +41,7 @@ export default function Homepage(){
         console.error("error fetching data: ", error);
     });
 
-    myAxiosInstance.get('listModules/').then((response) =>{
+    myAxiosInstance.get('listModules/currentUser/').then((response) =>{
         console.log(response.data)
         setModules(response.data)
         
@@ -69,6 +69,10 @@ export default function Homepage(){
             </Stack>
             <h2> My Courses</h2>
             <div className = "ModuleList">
+                {modules.length=== 0 && (
+                    <div>
+                        You are not enrolled in any Modules Yet!
+                    </div>)}
                 <List component = {Stack} direction = "row">
                     {modules.map(function(module, i){
                         return <ListItem key={i}>{module.name} 

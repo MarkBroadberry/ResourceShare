@@ -10,6 +10,7 @@ export default function ModuleResources(){
         const [file, setFile] = useState([]);
         const [fileDescription, setFileDescription] = useState("");
         const [user, setUser] = useState({});
+        const [fileResetKey, setFileResetKey] = useState(0);
         
         const location = useLocation();
 
@@ -28,6 +29,18 @@ export default function ModuleResources(){
         });
         },[user.id, module.id] );
 
+        useEffect( () =>{
+
+            myAxiosInstance.get('/').then((response) =>{
+                console.log(response.data)
+                setModules(response.data)
+                
+            })
+            .catch((error) =>{
+                console.error("error fetching data: ", error);
+            });
+        }, []);
+
         const handleFileChange = (e) =>{
             console.log(e.target.files[0]);
             setFile(e.target.files[0]);
@@ -45,8 +58,6 @@ export default function ModuleResources(){
                 const formData = new FormData();
                 formData.append('name', fileName);
                 formData.append('description', fileDescription);
-                console.log("File Value; ", file);
-                //console.log("File Value; ", file.File);
                 formData.append('resource', file);
                 formData.append('module', module.id);
                 formData.append('author', user.id);
@@ -55,7 +66,11 @@ export default function ModuleResources(){
                 headers: headers
               })
                 .then((response) => {
-                    console.log("file post success");
+                    setFile([]);
+                    setFileDescription("");
+                    setFileName("");
+                    setFileResetKey(key => key + 1);
+                    console.log("file post success!");
                 })
                 .catch((error)=> {
                     console.log("error in resourceUpload/ post ", error);
@@ -70,7 +85,19 @@ export default function ModuleResources(){
                 <div className='ModuleResourceTitles'>
                     <h1>{module.name}</h1>
                 </div>
-
+                {/*
+                <div className = "ModuleList">
+                    <List component = {Stack} direction = "row">
+                        {.map(function(, i){
+                            return <ListItem key={i}>{.name} 
+                                <Button onClick={() => handleRedirect()}>
+                                    See File Resources
+                                </Button>
+                            </ListItem>
+                        })}
+                    </List>
+                </div>
+                    */}
                 <form onSubmit={handleSubmit} encType="multipart/form-data">
                     <TextField 
                     label = "File Name"
@@ -81,9 +108,10 @@ export default function ModuleResources(){
                     value = {fileDescription}
                     onChange={(e)=> setFileDescription(e.target.value)}/>
 
-                    <input
+                    <TextField
                     type = "file"
-                    onChange={handleFileChange}/>
+                    onChange={handleFileChange}
+                    key = {fileResetKey}/>
                     <Button variant = "contained" type = "submit" value = "Submit">Submit</Button>
                 </form>
                 
