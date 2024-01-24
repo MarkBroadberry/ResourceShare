@@ -122,6 +122,9 @@ class ResourceSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Resource
         fields = '__all__'
+        #include related models up to one level deep - in this case includ author.(customuser)
+        depth = 1
+        
     def create(self, validated_data):
         resource = models.Resource.objects.create(**validated_data)
         return resource

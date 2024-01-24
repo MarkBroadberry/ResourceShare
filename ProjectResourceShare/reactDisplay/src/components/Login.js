@@ -1,6 +1,6 @@
 import { TextField, Typography } from "@material-ui/core";
 import Stack from '@mui/material/Stack';
-import React, { Component, useState } from 'react';
+import React, { Component, useContext, useState } from 'react';
 import Button from '@material-ui/core/Button';
 import myAxiosInstance from '../axios'
 import { useNavigate } from "react-router-dom";
@@ -8,6 +8,7 @@ import css from '../../static/css/index.css';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 //import './App.css';
+import { Context } from "./App";
 
 
 
@@ -17,6 +18,7 @@ export default function Login(){
     const [email,setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loginError, setLoginError] = useState(null);
+    const [isAuthorized, setIsAuthorized] = useContext(Context);
 
     const formSubmit = (event) => {
         event.preventDefault();
@@ -32,6 +34,7 @@ export default function Login(){
             localStorage.setItem('refreshToken', response.data['refresh']);
             localStorage.setItem('user', response.data['user']);
             myAxiosInstance.defaults.headers['Authorization']='Bearer ' + localStorage.getItem('accessToken');
+            setIsAuthorized(true);
             navigate("/home");
         })
         .catch((error) => {

@@ -1,11 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import myAxiosInstance from "../axios";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 //import {jwtDecode} from 'jwt-decode';
 import axios from 'axios';
+import { Context } from "./App";
 
 export default function Logout(){
         const navigate = useNavigate();
+        const [isAuthorized, setIsAuthorized] = useContext(Context);
     useEffect(() =>{
         const logout = async () => {
         try {
@@ -47,6 +49,7 @@ export default function Logout(){
             //console.log(response.data);
             localStorage.clear();
             myAxiosInstance.defaults.headers['Authorization']= null;
+            setIsAuthorized(false);
             navigate("/login");
         } catch(error){
             console.error("Failure in Logout:", error)

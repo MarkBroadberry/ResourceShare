@@ -1,6 +1,7 @@
 import { AppBar, MenuItem, Toolbar, makeStyles} from "@material-ui/core";
 import{ Link } from 'react-router-dom';
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
+import { Context } from "./App";
 
 const useStyles = makeStyles((theme) => ({
     toolbar: {
@@ -22,18 +23,22 @@ const useStyles = makeStyles((theme) => ({
 
   const Navbar = () => {
     const classes = useStyles();
-    const [isAuthorized, setIsAuthorized] = useState(false);
+    
+    const [isAuthorized, setIsAuthorized] = useContext(Context);
 
+    
     useEffect( () =>{
-      const accessToken = localStorage.getItem("accessToken");
+      let accessToken = localStorage.getItem("accessToken");
       setIsAuthorized(accessToken != null);
       console.log("IsAuthorized: ", isAuthorized);
-    },[]); //empty array is a dependancy array
+    }); //empty array is a dependancy array */
+    
+
   return(
     <AppBar>
       <Toolbar>
           <MenuItem component={Link} to = "/home">
-            My Courses4
+            My Courses
           </MenuItem>
           <MenuItem component={Link} to = "/uploads">
             My Uploads

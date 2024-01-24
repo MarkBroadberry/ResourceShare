@@ -139,14 +139,15 @@ class ResourceUploadView(APIView):
         
 class ResourcesForModuleView(APIView):
     serializer_class = ResourceSerializer
-
     def get(self, request, moduleId):
         try:
-            resource = Resource.objects.filter(module=moduleId)
-            serializer = self.serializer_class(resource)
+            resources = Resource.objects.filter(module=moduleId).select_related('author')
+            serializer = self.serializer_class(resources, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
-        except resource.DoesNotExist:
-            return Response({"error": "resource not found"}, status = status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            logger.error(f"An error occurred: {e}")
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        
         
 
 

@@ -49,7 +49,7 @@ export default function Register(){
     return(
         <>
         <div className = "CenterForm">
-            <h1 className = "LoginTitle">Sign Up1</h1>
+            <h1 className = "LoginTitle">Sign Up</h1>
             <form onSubmit={formSubmit}>
                 <Stack spacing = {2}>
                     <TextField 

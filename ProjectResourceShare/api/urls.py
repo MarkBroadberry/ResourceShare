@@ -17,6 +17,6 @@ urlpatterns = [
     path('listModules/', views.ModuleView.as_view(), name = 'ModuleList'),
     path('listModules/currentUser/', views.CurrentUserModuleView.as_view(), name = 'current_user_modules'),
     path('resourceUpload/', views.ResourceUploadView.as_view(), name = 'resourceUpload'),
-    path('getResources/module', views.ResourcesForModuleView.as_view(), name = "resources_for_module"),
+    path('getResources/module/<int:moduleId>/', views.ResourcesForModuleView.as_view(), name = "resources_for_module"),
    
 ]

@@ -3,7 +3,9 @@ import {useState} from 'react';
 import { useLocation } from "react-router-dom";
 import myAxiosInstance from '../axios';
 import { Button, TextField } from '@mui/material';
-
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import Stack from '@mui/material/Stack';
 
 export default function ModuleResources(){
         const [fileName, setFileName] = useState("");
@@ -11,6 +13,7 @@ export default function ModuleResources(){
         const [fileDescription, setFileDescription] = useState("");
         const [user, setUser] = useState({});
         const [fileResetKey, setFileResetKey] = useState(0);
+        const [resources, setResources] = useState([]);
         
         const location = useLocation();
 
@@ -31,13 +34,15 @@ export default function ModuleResources(){
 
         useEffect( () =>{
 
-            myAxiosInstance.get('/').then((response) =>{
-                console.log(response.data)
-                setModules(response.data)
-                
+            myAxiosInstance.get(`getResources/module/${module.id}/`).then((response) =>{
+                console.log("resources: ", response.data);
+                setResources(response.data);
+                console.log("author: ", response.data[0].author);
+                console.log("resource: ", response.data[0].resource);
+                console.log("test");
             })
             .catch((error) =>{
-                console.error("error fetching data: ", error);
+                console.error("error fetching resources data: ", error);
             });
         }, []);
 
@@ -85,19 +90,23 @@ export default function ModuleResources(){
                 <div className='ModuleResourceTitles'>
                     <h1>{module.name}</h1>
                 </div>
-                {/*
-                <div className = "ModuleList">
-                    <List component = {Stack} direction = "row">
-                        {.map(function(, i){
-                            return <ListItem key={i}>{.name} 
-                                <Button onClick={() => handleRedirect()}>
-                                    See File Resources
-                                </Button>
-                            </ListItem>
+
+                <h3>Resources for this Module</h3>
+
+                    <List component = {Stack} spacing = {2} direction = "row">
+                        {resources.map(function(resource){
+                            return(
+                            <div className = "ResourceList" key = {resource.id}>
+                                <ListItem>
+                                    <Stack spacing = {2}>
+                                    <iframe src={resource.resource}/>
+                                    <p>File Name: {resource.name}</p>
+                                    <p>Author: {resource.author.first_name} {resource.author.last_name}</p>
+                                    </Stack>
+                                </ListItem>
+                            </div>)
                         })}
                     </List>
-                </div>
-                    */}
                 <form onSubmit={handleSubmit} encType="multipart/form-data">
                     <TextField 
                     label = "File Name"
