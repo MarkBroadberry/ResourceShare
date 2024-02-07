@@ -30,7 +30,7 @@ export default function ModuleResources(){
         .catch((error) =>{
             console.log("error fetching user data: ", error);
         });
-        },[user.id, module.id] );
+        },[user.id] );
 
         useEffect( () =>{
 
@@ -40,6 +40,7 @@ export default function ModuleResources(){
                 console.log("author: ", response.data[0].author);
                 console.log("resource: ", response.data[0].resource);
                 console.log("test");
+                /*myAxiosInstance.get('getUserDetail')*/
             })
             .catch((error) =>{
                 console.error("error fetching resources data: ", error);
@@ -64,8 +65,9 @@ export default function ModuleResources(){
                 formData.append('name', fileName);
                 formData.append('description', fileDescription);
                 formData.append('resource', file);
-                formData.append('module', module.id);
                 formData.append('author', user.id);
+                formData.append('module', module.id);
+                console.log("form data appended", user.id, module.id)
 
                 myAxiosInstance.post('resourceUpload/', formData, {
                 headers: headers
@@ -85,6 +87,10 @@ export default function ModuleResources(){
             };
         }
 
+        const downloadFile = () =>{
+            //TODO - COMPLETE THIS FUNCTION -> AXIOS REQUEST AND USE JS-FILE-DOWNLOAD PACKAGE. 
+        }
+
         return (
             <>
                 <div className='ModuleResourceTitles'>
@@ -102,6 +108,7 @@ export default function ModuleResources(){
                                     <iframe src={resource.resource}/>
                                     <p>File Name: {resource.name}</p>
                                     <p>Author: {resource.author.first_name} {resource.author.last_name}</p>
+                                    <Button variant ='contained' onClick = {downloadFile}>Download</Button>
                                     </Stack>
                                 </ListItem>
                             </div>)

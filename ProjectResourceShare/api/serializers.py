@@ -16,25 +16,6 @@ class ModuleSerializer(serializers.ModelSerializer):
         module = models.Module.objects.create(**validated_data)
         module.students.set(user_id_list)
         return module
-        '''
-        students_data = validated_data.pop('students', None)
-        university_data = validated_data.pop('university', None)
-        module_instance = self.Meta.model(**validated_data)
-        if university_data and 'name' in university_data:  
-            logger.info("before university instance")
-            university_instance, created = models.University.objects.get(name=university_data['name'])
-            logger.info("university instance %s", university_instance)
-            module_instance.university = university_instance
-        if students_data:  
-            logger.info("before students instance")
-            students_instance, created = models.CustomUser.objects.get(email=students_data['email'])
-            logger.info("students instance %s", students_instance)
-            module_instance.students = students_instance
-        module_instance.save()
-        return module_instance'''
-
-
-
 
 class UniversitySerializer(serializers.ModelSerializer):
     class Meta: 
@@ -65,10 +46,6 @@ class UserSerializer(serializers.ModelSerializer):
             user_instance.set_password(password)
             logger.info("user_instance %s", user_instance)
             #django method to sha256 hash the password.
-        '''try:
-            user_instance.save()
-        except Exception as e:
-            logger.debug(e)'''
 
         logger.info("saved pw ")
         if university_data and 'name' in university_data:  
@@ -78,31 +55,7 @@ class UserSerializer(serializers.ModelSerializer):
             user_instance.university = university_instance
             
         user_instance.save()
-        return user_instance
-
-        #return userInstance
-        '''
-        if university_data:
-            serialized_university = UniversitySerializer(data=university_data)
-            #print("uni serializer: ", serialized_university)
-            if serialized_university.is_valid():
-                university_instance, created = models.University.objects.get_or_create(**university_data)
-                userInstance.university = university_instance
-                userInstance.save()
-            else:
-                print("serialized university errors", serialized_university.errors)
-        else:
-            print("university_data errors: ")'''
-        
-         #get_or_create returns tuple, the instance and a boolean if the instance was created.
-            #logger.info("university data %s", university_data)
-            ##logger.info("university instance name: %s", university_data['name'])
-               #logger.info("university data %s", university_instance)
-            #logger.info("university instance name: %s", university_instance['name'])
-          #print("university_data: ", university_data)
-    
-        
-        
+        return user_instance 
         
     
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -117,14 +70,28 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         #add other fields here that will be put into local storage and accessed from client. 
         return data
     
+#using two different serializers, so we can store just the ids for the foreign key relationship and then
+#when we are fetching, we use nested serializers to get the author and module objects, not just their ids. 
+class ResourceFetchSerializer(serializers.ModelSerializer):
+    author = UserSerializer()
+    module = ModuleSerializer()
+    class Meta:
+        depth = 1
+        model = models.Resource
+        fields = ['name', 'description', 'resource', 'author', 'module']
 
-class ResourceSerializer(serializers.ModelSerializer):
+
+class ResourceCreateSerializer(serializers.ModelSerializer):
+    author = serializers.PrimaryKeyRelatedField(queryset=models.CustomUser.objects.all())
+    module = serializers.PrimaryKeyRelatedField(queryset=models.Module.objects.all())
+    
     class Meta:
         model = models.Resource
-        fields = '__all__'
-        #include related models up to one level deep - in this case includ author.(customuser)
+        fields = ['name', 'description', 'resource', 'author', 'module']
+        #include related models up to one level deep - in this case include author.(customuser)
         depth = 1
         
     def create(self, validated_data):
-        resource = models.Resource.objects.create(**validated_data)
-        return resource
+        resource_instance = models.Resource.objects.create(**validated_data)
+
+        return resource_instance

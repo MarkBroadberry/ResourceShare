@@ -18,5 +18,8 @@ urlpatterns = [
     path('listModules/currentUser/', views.CurrentUserModuleView.as_view(), name = 'current_user_modules'),
     path('resourceUpload/', views.ResourceUploadView.as_view(), name = 'resourceUpload'),
     path('getResources/module/<int:moduleId>/', views.ResourcesForModuleView.as_view(), name = "resources_for_module"),
+    #path('getUserDetail/user/<int:userId>/', views..as_view(), name = "specified user"),
+
+    #path('download/<str:fileName>/', views.DownloadPDFView.as_view(), name = "download_pdf"),
    
 ]

@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework import generics, status
-from .serializers import ModuleSerializer, UserSerializer, MyTokenObtainPairSerializer, UniversitySerializer, ResourceSerializer
+from .serializers import * #ModuleSerializer, UserSerializer, MyTokenObtainPairSerializer, UniversitySerializer, Res
 from ResourceShare.models import Module, CustomUser, University, Resource
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -11,6 +11,9 @@ from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.serializers import ValidationError
+from django.core.files import File
+from django.http import HttpResponse
+
 # Create your views here.
 import logging
 
@@ -109,6 +112,19 @@ class GetUserDetailView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         except user.DoesNotExist:
             return Response({"error": "user not found"}, status = status.HTTP_404_NOT_FOUND)
+
+'''   
+class GetSpecifiedUserDetail(APIView):
+    serializer_class = UserSerializer
+    def get(self, request, userId):
+        try:
+            users = CustomUser.objects.filter(user=userId).select_related('author')
+            serializer = self.serializer_class(resources, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            logger.error(f"An error occurred: {e}")
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+            '''
         
 class CreateModuleView(APIView):
     def post(self, request):
@@ -126,11 +142,13 @@ class CreateModuleView(APIView):
             return Response(status=status.HTTP_400_BAD_REQUEST)
         
 class ResourceUploadView(APIView):
-    serializer_class = ResourceSerializer
+    serializer_class = ResourceCreateSerializer
     def post(self, request):
         try:
             serializer = self.serializer_class(data=request.data)
+            logger.info(request.data)
             serializer.is_valid(raise_exception=True)
+            
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         except Exception as e:
@@ -138,15 +156,28 @@ class ResourceUploadView(APIView):
             return Response(status=status.HTTP_400_BAD_REQUEST)
         
 class ResourcesForModuleView(APIView):
-    serializer_class = ResourceSerializer
+    serializer_class = ResourceFetchSerializer
     def get(self, request, moduleId):
         try:
-            resources = Resource.objects.filter(module=moduleId).select_related('author')
+            resources = Resource.objects.filter(module=moduleId).prefetch_related('author')
             serializer = self.serializer_class(resources, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
             logger.error(f"An error occurred: {e}")
             return Response(status=status.HTTP_400_BAD_REQUEST)
+        
+
+        
+
+
+class DownloadPDFView:
+    def get(self, request, fileName):
+        path_to_file = MEDIA_ROOT + fileName
+        f = open(path_to_file, 'rb')
+        pdfFile = File(f)
+        response = HttpResponse(pdfFile.read())
+        response['Content-Disposition'] = 'attachment'
+        return response
         
         
 

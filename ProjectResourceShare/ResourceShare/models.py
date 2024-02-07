@@ -39,24 +39,6 @@ class Resource(models.Model):
     resource = models.FileField(upload_to="uploads/")
     module = models.ForeignKey(Module, on_delete=models.CASCADE)
     author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    
-
-    
-
-
-'''
-class File(models.Model):
-    fileName = models.CharField(max_length=256, default= "No file name specified")
-    filePath = models.CharField(max_length=1024, default = "No file path specified")
-    fileType = models.CharField(max_length=64, default = "No file type specified")
-    module = models.ForeignKey(Module, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.fileName
-    
-'''
-
-
 
 
 

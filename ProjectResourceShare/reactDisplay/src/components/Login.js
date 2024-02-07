@@ -66,6 +66,7 @@ export default function Login(){
                             id = "password"
                             label = "Password"
                             name = "password"
+                            type = "password"
                             value = {password}
                             onChange = {(e)=> setPassword(e.target.value)}
                             />
