@@ -71,18 +71,14 @@ body{
 }
 
 .UserInfo{
-  margin: 7% auto;
+  margin-top: 7%;
+  text-align: left;
 }
 
 .ModuleList{
   border: 2px solid rgb(190, 190, 190);
   border-radius: 25px;
-  max-width: 60%;
-  margin-left: 20%;
-  box-shadow: 10px 5px 5px #5841dc;
-  margin-bottom: 2%;
   overflow-x: auto;
-
 }
 
 .individualModule{
@@ -101,4 +97,47 @@ body{
   border: 1px solid rgb(168, 168, 168);
   border-radius: 25px;
   padding: 2%;
+}
+
+
+.SearchTitle{
+  margin-top: 0;
+  margin-bottom: 5px;
+}
+
+.EnrolledCheck{
+  border: 2px solid rgb(168, 168, 168);
+  border-radius: 5px;
+  display: flex;
+  background-color: rgb(168, 168, 168);
+  padding: 5px 0;
+  font-size: 15;
+  align-items: center;
+}
+
+.DisplayedModule{
+  border: 2px solid rgb(168, 168, 168);
+  border-radius: 10px;
+  max-width: 20%;
+}
+
+.DisplayedModuleTitle{
+  text-align: center;
+  overflow: auto;
+}
+
+.ModuleItem{
+height: 100px;
+width: 100%;
+overflow: auto;
+}
+
+
+h2{
+  margin-top: 0;
+}
+
+h4{
+  margin-top: 0;
+  margin-bottom: 5px;
 }

@@ -11,6 +11,7 @@ class ModuleSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Module
         fields = '__all__'
+        depth = 1
     def create(self, validated_data):
         user_id_list = validated_data.pop('students', [])
         module = models.Module.objects.create(**validated_data)

@@ -167,8 +167,18 @@ class ResourcesForModuleView(APIView):
             return Response(status=status.HTTP_400_BAD_REQUEST)
         
 
-        
 
+class EnrollUserView(APIView):
+    serializer_class = ModuleSerializer
+    def post(self, request, moduleId):
+        try:
+            module = Module.objects.get(id=moduleId)
+            user = request.user
+            module.students.add(user)
+            return Response(status = status.HTTP_200_OK)
+        except Exception as e:
+            logger.error(f"An error occured: {e}")
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
 class DownloadPDFView:
     def get(self, request, fileName):
