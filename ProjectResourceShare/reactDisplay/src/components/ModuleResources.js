@@ -6,6 +6,7 @@ import { Button, TextField } from '@mui/material';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import Stack from '@mui/material/Stack';
+import fileDownload from 'js-file-download';
 
 export default function ModuleResources(){
         const [fileName, setFileName] = useState("");
@@ -87,8 +88,16 @@ export default function ModuleResources(){
             };
         }
 
-        const downloadFile = () =>{
+        const downloadFile = (fileName) =>{
+            console.log("resource.resource1: ", fileName);
             //TODO - COMPLETE THIS FUNCTION -> AXIOS REQUEST AND USE JS-FILE-DOWNLOAD PACKAGE. 
+            fileName = fileName.replace('/media/uploads/', "");
+            console.log("replaced:",fileName);
+            console.log(fileName[0]);
+            myAxiosInstance.get(`download/${fileName}/`, {responseType : 'blob',}).then((response)=>{
+                console.log(response.data);
+                fileDownload(response.data, fileName);
+            })
         }
 
         return (
@@ -102,13 +111,13 @@ export default function ModuleResources(){
                     <List component = {Stack} spacing = {2} direction = "row">
                         {resources.map(function(resource){
                             return(
-                            <div className = "ResourceList" key = {resource.id}>
+                            <div className = "ResourceListItem" key = {resource.id}>
                                 <ListItem>
                                     <Stack spacing = {2}>
                                     <iframe src={resource.resource}/>
                                     <p>File Name: {resource.name}</p>
                                     <p>Author: {resource.author.first_name} {resource.author.last_name}</p>
-                                    <Button variant ='contained' onClick = {downloadFile}>Download</Button>
+                                    <Button variant ='contained' onClick = {() => downloadFile(resource.resource)}>Download</Button>
                                     </Stack>
                                 </ListItem>
                             </div>)

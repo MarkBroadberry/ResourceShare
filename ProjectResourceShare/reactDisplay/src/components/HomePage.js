@@ -81,7 +81,7 @@ export default function Homepage(){
             </div>
             <Typography variant = "h3">My Courses</Typography>
         <Box /*Module Section*/ sx = {{display: 'flex', width: '100%'}}>
-            <Box /*Module List*/ sx = {{width: '45%', height: '50%', marginRight: '2%'}}>
+            <Box /*Module List*/ sx = {{width: '45%', marginRight: '2%'}}>
                 <div className = "ModuleList">
                     {userModules.length=== 0 && (
                         <div>
@@ -89,7 +89,7 @@ export default function Homepage(){
                         </div>)}
                     <List component = {Stack} direction = "row" spacing = {2}>
                         {userModules.map(function(module, i){
-                            return (<Stack key = {i} direction = "column" spacing = {2} className = "DisplayedModule" width={1000}>    
+                            return (<Stack key = {i} direction = "column" spacing = {2} className = "DisplayedModule">    
                                         <ListItem className = "ModuleItem">
                                             <Typography className = "DisplayedModuleTitle">
                                                 {module.name} 
@@ -107,7 +107,7 @@ export default function Homepage(){
                     </List>
                 </div>
             </Box>
-            <Box /*Module Search*/sx = {{width: '50%', maxHeight: 300, overflowY :'auto', border: 2, borderColor: 'gray', borderRadius: '10px'}}>
+            <Box /*Module Search*/sx = {{width: '50%', height: 250, overflowY :'auto', border: 2, borderColor: 'gray', borderRadius: '10px'}}>
                 <h4 className = "SearchTitle"> Enroll Into a Module </h4>
                 <ModuleSearch dataList={moduleList} enrolledModules={userModules.map(module => module.id)}></ModuleSearch>
             </Box>

@@ -13,6 +13,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.serializers import ValidationError
 from django.core.files import File
 from django.http import HttpResponse
+from ProjectResourceShare.settings import MEDIA_ROOT
 
 # Create your views here.
 import logging
@@ -180,10 +181,14 @@ class EnrollUserView(APIView):
             logger.error(f"An error occured: {e}")
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
-class DownloadPDFView:
+class DownloadPDFView(APIView):
     def get(self, request, fileName):
-        path_to_file = MEDIA_ROOT + fileName
+        
+        path_to_file = MEDIA_ROOT + "/uploads/" + fileName
+        logger.info('path_to_file:')
+        logger.info(path_to_file)
         f = open(path_to_file, 'rb')
+        logger.info('File opened successfully!')
         pdfFile = File(f)
         response = HttpResponse(pdfFile.read())
         response['Content-Disposition'] = 'attachment'

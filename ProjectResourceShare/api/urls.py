@@ -20,7 +20,5 @@ urlpatterns = [
     path('getResources/module/<int:moduleId>/', views.ResourcesForModuleView.as_view(), name = "resources_for_module"),
     #path('getUserDetail/user/<int:userId>/', views..as_view(), name = "specified user"),
     path('enrollCurrentUser/module/<int:moduleId>/', views.EnrollUserView.as_view(), name = "enroll_user_to_module"),
-
-    #path('download/<str:fileName>/', views.DownloadPDFView.as_view(), name = "download_pdf"),
-   
+    path('download/<str:fileName>/', views.DownloadPDFView.as_view(), name = "download_pdf"),
 ]
