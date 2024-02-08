@@ -77,7 +77,7 @@ class ResourceFetchSerializer(serializers.ModelSerializer):
     author = UserSerializer()
     module = ModuleSerializer()
     class Meta:
-        depth = 1
+        depth = 2
         model = models.Resource
         fields = ['name', 'description', 'resource', 'author', 'module']
 

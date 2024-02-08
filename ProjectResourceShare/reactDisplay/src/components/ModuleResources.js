@@ -2,11 +2,14 @@ import React, { Component, useEffect } from 'react';
 import {useState} from 'react';
 import { useLocation } from "react-router-dom";
 import myAxiosInstance from '../axios';
-import { Button, TextField } from '@mui/material';
+import { Button, TextField, Card, CardContent, CardActions, Typography, Box } from '@mui/material';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import Stack from '@mui/material/Stack';
 import fileDownload from 'js-file-download';
+import FilePresentIcon from '@mui/icons-material/FilePresent';
+import PersonIcon from '@mui/icons-material/Person';
+
 
 export default function ModuleResources(){
         const [fileName, setFileName] = useState("");
@@ -108,21 +111,32 @@ export default function ModuleResources(){
 
                 <h3>Resources for this Module</h3>
 
-                    <List component = {Stack} spacing = {2} direction = "row">
+                    <List component = {Stack} spacing = {2} direction = "row" style = {{overflow: 'auto'}}>
                         {resources.map(function(resource){
                             return(
-                            <div className = "ResourceListItem" key = {resource.id}>
-                                <ListItem>
-                                    <Stack spacing = {2}>
-                                    <iframe src={resource.resource}/>
-                                    <p>File Name: {resource.name}</p>
-                                    <p>Author: {resource.author.first_name} {resource.author.last_name}</p>
-                                    <Button variant ='contained' onClick = {() => downloadFile(resource.resource)}>Download</Button>
-                                    </Stack>
+                                <ListItem key = {resource.id}>
+                                    <Card sx = {{width: '100%'}} key = {resource.id}>
+                                        <CardContent>
+                                            <Box style = {{display:'flex'}}>
+                                                <FilePresentIcon/>
+                                                <Typography>{resource.name}</Typography>
+                                            </Box>
+                                            <iframe src={resource.resource}/>
+                                            <Box style = {{display:'flex'}}>
+                                                <PersonIcon/>
+                                                <Typography variant = 'body2'>{resource.author.first_name} {resource.author.last_name}</Typography>
+                                            </Box>
+                                        </CardContent>
+                                        <CardActions style = {{justifyContent: 'center'}}>
+                                            <Button variant ='contained' onClick = {() => downloadFile(resource.resource)}>Download</Button>
+                                        </CardActions>
+                                        {/*</Stack>*/}
+                                    </Card>
                                 </ListItem>
-                            </div>)
+                            )
                         })}
                     </List>
+                <Typography variant = 'h6'>Upload a new Resource to the {module.name} module</Typography>
                 <form onSubmit={handleSubmit} encType="multipart/form-data">
                     <TextField 
                     label = "File Name"
