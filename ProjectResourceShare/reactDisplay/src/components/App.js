@@ -9,7 +9,7 @@ import Navbar from "./Navbar";
 import Logout from "./Logout";
 import ModuleResources from "./ModuleResources";
 import { StrictMode } from "react";
-import { Module } from "webpack";
+import ResourceRatings from "./ResourceRatings";
 
 export const Context = React.createContext();
 
@@ -34,6 +34,7 @@ export default function App() {
                         <Route exact path = "/" element  = { <Login/> }/>
                         <Route exact path = "/logout" element = {<Logout/>} />
                         <Route exact path = "/ModuleResources" element = {<ModuleResources/>} />
+                        <Route exact path = "/ResourceRatings" element = {<ResourceRatings/>} />
                     </Routes>
                 </BrowserRouter>
             </Context.Provider>

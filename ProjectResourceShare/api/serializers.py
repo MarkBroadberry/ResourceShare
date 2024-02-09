@@ -79,7 +79,7 @@ class ResourceFetchSerializer(serializers.ModelSerializer):
     class Meta:
         depth = 2
         model = models.Resource
-        fields = ['name', 'description', 'resource', 'author', 'module']
+        fields = ['id','name', 'description', 'resource', 'author', 'module']
 
 
 class ResourceCreateSerializer(serializers.ModelSerializer):
@@ -96,3 +96,28 @@ class ResourceCreateSerializer(serializers.ModelSerializer):
         resource_instance = models.Resource.objects.create(**validated_data)
 
         return resource_instance
+    
+class RatingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Rating
+        fields = ['resource', 'author', 'rating', 'comment']
+        depth = 1
+    def create(self, validated_data):
+        rating_instance = models.Rating.objects.create(**validated_data)
+        return rating_instance
+    
+class RatingCreateSerializer(serializers.ModelSerializer):
+    author = serializers.PrimaryKeyRelatedField(queryset=models.CustomUser.objects.all())
+    resource = serializers.PrimaryKeyRelatedField(queryset=models.Resource.objects.all())
+
+    class Meta:
+        model = models.Rating
+        fields = ['resource', 'author', 'rating', 'comment']
+        #include related models up to one level deep - in this case include author.(customuser)
+        depth = 1
+        
+    def create(self, validated_data):
+        rating_instance = models.Rating.objects.create(**validated_data)
+
+        return rating_instance
+    

@@ -21,4 +21,6 @@ urlpatterns = [
     #path('getUserDetail/user/<int:userId>/', views..as_view(), name = "specified user"),
     path('enrollCurrentUser/module/<int:moduleId>/', views.EnrollUserView.as_view(), name = "enroll_user_to_module"),
     path('download/<str:fileName>/', views.DownloadPDFView.as_view(), name = "download_pdf"),
+    path('getRatings/<int:resourceId>/', views.RatingView.as_view(), name = "get_ratings"),
+    path('createRating/', views.RatingView.as_view(), name = "create_rating"),
 ]

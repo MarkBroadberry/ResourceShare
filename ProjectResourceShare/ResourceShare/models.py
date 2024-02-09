@@ -40,6 +40,12 @@ class Resource(models.Model):
     module = models.ForeignKey(Module, on_delete=models.CASCADE)
     author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 
+class Rating(models.Model):
+    resource = models.ForeignKey(Resource, on_delete=models.CASCADE)
+    author = models.ForeignKey(CustomUser, on_delete = models.CASCADE)
+    rating = models.FloatField()
+    comment = models.TextField(max_length=512, default = 'No  Comment Provided')
+
 
 
 

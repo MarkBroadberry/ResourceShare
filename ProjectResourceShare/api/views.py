@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import generics, status
 from .serializers import * #ModuleSerializer, UserSerializer, MyTokenObtainPairSerializer, UniversitySerializer, Res
-from ResourceShare.models import Module, CustomUser, University, Resource
+from ResourceShare.models import Module, CustomUser, University, Resource, Rating
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -89,10 +89,6 @@ class GetUniversityView(APIView):
     serializer_class = UniversitySerializer
 
     def get(self, request):
-        """
-        This view should return a list of all the purchases
-        for the currently authenticated user.
-        """
         try:
             user = self.request.user
             logger.info(user.email)
@@ -193,6 +189,31 @@ class DownloadPDFView(APIView):
         response = HttpResponse(pdfFile.read())
         response['Content-Disposition'] = 'attachment'
         return response
+    
+
+class RatingView(APIView):
+    #serializer_class = RatingSerializer
+
+    def get(self, request, resourceId):
+        ratings = Rating.objects.filter(resource = resourceId)
+        serializer = RatingSerializer(ratings, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def post(self, request):
+        try:
+            logger.info(request.data)
+            serializer = RatingCreateSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        except ValidationError as e:
+            logger.error(f"An error occurred: {e}")
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            logger.error(f"An error occurred: {e}")
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+    
+
         
         
 

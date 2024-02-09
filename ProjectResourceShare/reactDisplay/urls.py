@@ -7,4 +7,5 @@ urlpatterns = [
     path('home', index),
     path('login', index),
     path('ModuleResources', index),
+    path('ResourceRatings', index),
 ]

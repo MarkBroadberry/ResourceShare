@@ -1,6 +1,6 @@
 import React, { Component, useEffect } from 'react';
 import {useState} from 'react';
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import myAxiosInstance from '../axios';
 import { Button, TextField, Card, CardContent, CardActions, Typography, Box } from '@mui/material';
 import List from '@mui/material/List';
@@ -20,6 +20,7 @@ export default function ModuleResources(){
         const [resources, setResources] = useState([]);
         
         const location = useLocation();
+        const navigate = useNavigate();
 
         let module = location.state;
         let requestData = {}
@@ -43,7 +44,7 @@ export default function ModuleResources(){
                 setResources(response.data);
                 console.log("author: ", response.data[0].author);
                 console.log("resource: ", response.data[0].resource);
-                console.log("test");
+                console.log("resourceID: ", response.data[0].id);
                 /*myAxiosInstance.get('getUserDetail')*/
             })
             .catch((error) =>{
@@ -93,7 +94,6 @@ export default function ModuleResources(){
 
         const downloadFile = (fileName) =>{
             console.log("resource.resource1: ", fileName);
-            //TODO - COMPLETE THIS FUNCTION -> AXIOS REQUEST AND USE JS-FILE-DOWNLOAD PACKAGE. 
             fileName = fileName.replace('/media/uploads/', "");
             console.log("replaced:",fileName);
             console.log(fileName[0]);
@@ -102,6 +102,9 @@ export default function ModuleResources(){
                 fileDownload(response.data, fileName);
             })
         }
+
+        const handleRedirect = (chosenResource) => navigate('/ResourceRatings',{state: chosenResource});
+
 
         return (
             <>
@@ -117,14 +120,23 @@ export default function ModuleResources(){
                                 <ListItem key = {resource.id}>
                                     <Card sx = {{width: '100%'}} key = {resource.id}>
                                         <CardContent>
-                                            <Box style = {{display:'flex'}}>
+                                            <Box style = {{display:'flex', marginBottom: '2%', justifyContent: 'center'}}>
                                                 <FilePresentIcon/>
                                                 <Typography>{resource.name}</Typography>
+                                                <Box style = {{marginLeft : 'auto'}}>
+                                                    <Button variant = 'contained' onClick={() => handleRedirect(resource)}>
+                                                        {
+                                                        /* Should be a View Ratings Page if you are the Author*/
+                                                        resource.author.id == user.id ? 'View Ratings' : 'Rate It'
+                                                        }
+                                                    </Button>
+                                                </Box>
                                             </Box>
                                             <iframe src={resource.resource}/>
                                             <Box style = {{display:'flex'}}>
                                                 <PersonIcon/>
-                                                <Typography variant = 'body2'>{resource.author.first_name} {resource.author.last_name}</Typography>
+                                                <Typography variant = 'body2'>
+                                                    {resource.author.id == user.id? 'Me' : resource.author.first_name + " " + resource.author.last_name}</Typography>
                                             </Box>
                                         </CardContent>
                                         <CardActions style = {{justifyContent: 'center'}}>
