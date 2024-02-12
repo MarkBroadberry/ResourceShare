@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import myAxiosInstance from '../axios';
 import FilePresentIcon from '@mui/icons-material/FilePresent';
 import PersonIcon from '@mui/icons-material/Person';
+import Rating from '@mui/material/Rating';
 
 export default function ResourceRatings() {
 
@@ -77,13 +78,23 @@ export default function ResourceRatings() {
                 This will be replaced with a stars rating input*/}
                 <form onSubmit = {handleAddRating}>
                     <Typography>Rate This Resource</Typography>
+                    <Rating
+                     name="newRating"
+                     defaultValue={0}
+                     precision={0.5}
+                     value = {newRating}
+                     onChange = {(e)=> setNewRating(e.target.value)} />
+
+                    
+                    {/*
                     <TextField
                     id = "newRating"
                     label = "Your Rating"
                     name = "newRating"
                     value = {newRating}
                     onChange = {(e)=> setNewRating(e.target.value)}
-                    />
+                    />*/}
+
                     <TextField
                     id = "ratingComment"
                     label = "Your Comment"
@@ -104,7 +115,8 @@ export default function ResourceRatings() {
                     <Card sx = {{width: '40%'}} key = {rating.id}>
                         <CardContent sx ={{display:'flex', justifyContent:'space-between'}}>
                             <Typography> <PersonIcon/>{rating.author.first_name} {rating.author.last_name}</Typography>
-                            <Typography>{rating.rating}</Typography>
+                            {/*<Typography>{rating.rating}</Typography>*/}
+                            <Rating name="viewedRating" value = {rating.rating} precision={0.5} readOnly />
                             <Typography>{rating.comment}</Typography>
                         </CardContent>
                         <CardActions style = {{justifyContent: 'center'}}>
