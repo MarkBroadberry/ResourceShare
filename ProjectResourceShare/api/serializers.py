@@ -38,7 +38,7 @@ class UserSerializer(serializers.ModelSerializer):
     #makes sure that the password goes into the database hashed
     def create(self, validated_data):
         logger.info("start of create method")
-      
+        
         university_data = validated_data.pop('university', None)
         logger.info("university data %s", university_data)
         password = validated_data.pop('password', None)
@@ -120,4 +120,5 @@ class RatingCreateSerializer(serializers.ModelSerializer):
         rating_instance = models.Rating.objects.create(**validated_data)
 
         return rating_instance
+
     

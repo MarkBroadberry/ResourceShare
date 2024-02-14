@@ -1,10 +1,13 @@
 import {React, useState, useEffect} from 'react';
-import {Button, List, ListItem, Stack, Box, Typography} from "@mui/material";
+import {Button, Stack, Box, Typography, Card, CardContent, CardActions} from "@mui/material";
 import myAxiosInstance from '../axios';
 import { TextField} from "@material-ui/core";
 import css from '../../static/css/index.css';
 import { useNavigate } from "react-router-dom";
 import ModuleSearch from './subComponents/ModuleSearch';
+import GppGoodIcon from '@mui/icons-material/GppGood';
+import PersonIcon from '@mui/icons-material/Person';
+import SchoolIcon from '@mui/icons-material/School';
 
 
 
@@ -76,38 +79,46 @@ export default function Homepage(){
         <div className = "Container">
             <div className = "UserInfo">
                 <Stack spacing = {1}> 
-                    <h3>{user.first_name} {user.last_name}</h3>
-                    <h4>{university.name}</h4>
+                    <h3><PersonIcon/> {user.first_name} {user.last_name}</h3>
+                    <h4><SchoolIcon/> {university.name}</h4>
+                    <Box sx = {{display: 'flex'}}>
+                        <GppGoodIcon/> {user.trust_rating}
+                    </Box>
                 </Stack>
             </div>
             <Typography variant = "h3">My Courses</Typography>
         <Box /*Module Section*/ sx = {{display: 'flex', width: '100%'}}>
-            <Box /*Module List*/ sx = {{width: '45%', marginRight: '2%'}}>
-                <div className = "ModuleList">
-                    {userModules.length=== 0 && (
-                        <div>
-                            You are not enrolled in any Modules Yet!
-                        </div>)}
-                    <List component = {Stack} direction = "row" spacing = {2}>
-                        {userModules.map(function(module, i){
-                            return (<Stack key = {i} direction = "column" spacing = {2} className = "DisplayedModule">    
-                                        <ListItem className = "ModuleItem">
-                                            <Typography className = "DisplayedModuleTitle">
-                                                {module.name} 
-                                            </Typography>
-                                        </ListItem>
-                                        <ListItem>        
-                                            <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-end', width: '100%' }}>
-                                                <Button color = 'secondary' size = 'small' variant = 'contained' onClick={() => handleRedirect(module)}>
-                                                    See Resources
-                                                </Button>
-                                            </Box>
-                                        </ListItem>
-                                    </Stack>)
-                        })}
-                    </List>
-                </div>
-            </Box>
+            <Stack direction = "row" spacing = {2} sx = {{width: "45%", overflow: "auto"}}>
+                {userModules.length=== 0 && (
+                <Typography>
+                    You are not enrolled in any Modules Yet!
+                </Typography>)}
+
+                {userModules.map(function(module, i){
+                    return (
+                        <Box key = {i} sx = {{minWidth: '20%', minHeight: '90%'}}>
+                            <Card sx = {{width: '100%', overflowX: 'auto'}}>    
+                                <CardContent sx = {{height: '60%'}}>
+                                    <Typography sx = {{fontSize: 14}} color = "text.secondary">
+                                        Module
+                                    </Typography>
+                                    <Typography variant = "h6">
+                                        {module.name} 
+                                    </Typography>
+                                </CardContent>
+                                <CardActions>
+                                    <Button sx = {{height : '20%'}} size = 'small' variant = 'contained' onClick={() => handleRedirect(module)}>
+                                        See Resources
+                                    </Button>
+                                </CardActions>
+                                    
+                                
+
+                            </Card>
+                        </Box>)
+                })}
+            </Stack>
+
             <Box /*Module Search*/sx = {{width: '50%', height: 250, overflowY :'auto', border: 2, borderColor: 'gray', borderRadius: '10px'}}>
                 <h4 className = "SearchTitle"> Enroll Into a Module </h4>
                 <ModuleSearch dataList={moduleList} enrolledModules={userModules.map(module => module.id)}></ModuleSearch>
@@ -116,9 +127,9 @@ export default function Homepage(){
         
 
             <form onSubmit = {AddModuleFormSubmit}>
-                <div>Add a New Module</div>
+                <div>Can't Find Your Modules? Add One!</div>
                 <TextField
-                label = "ModuleName"
+                label = "Type your Module Name"
                 value = {moduleName}
                 onChange = {(e)=> setModuleName(e.target.value)} ></TextField>
                 <Button variant='contained' type = "submit">Add</Button>

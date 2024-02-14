@@ -9,6 +9,7 @@ import Stack from '@mui/material/Stack';
 import fileDownload from 'js-file-download';
 import FilePresentIcon from '@mui/icons-material/FilePresent';
 import PersonIcon from '@mui/icons-material/Person';
+import GppGoodIcon from '@mui/icons-material/GppGood';
 
 
 export default function ModuleResources(){
@@ -118,13 +119,13 @@ export default function ModuleResources(){
                         {resources.map(function(resource){
                             return(
                                 <ListItem key = {resource.id}>
-                                    <Card sx = {{width: '100%'}} key = {resource.id}>
+                                    <Card sx = {{width: '100%', height: '100%'}} key = {resource.id}>
                                         <CardContent>
                                             <Box style = {{display:'flex', marginBottom: '2%', justifyContent: 'center'}}>
                                                 <FilePresentIcon/>
                                                 <Typography>{resource.name}</Typography>
                                                 <Box style = {{marginLeft : 'auto'}}>
-                                                    <Button variant = 'contained' onClick={() => handleRedirect(resource)}>
+                                                    <Button variant = 'contained' onClick={() => handleRedirect(resource)} style = {{fontSize: '0.6rem'}}>
                                                         {
                                                         /* Should be a View Ratings Page if you are the Author*/
                                                         resource.author.id == user.id ? 'View Ratings' : 'Rate It'
@@ -133,11 +134,15 @@ export default function ModuleResources(){
                                                 </Box>
                                             </Box>
                                             <iframe src={resource.resource}/>
-                                            <Box style = {{display:'flex'}}>
+                                            <Stack direction = "row" alignItems= "center" spacing={1}>
                                                 <PersonIcon/>
                                                 <Typography variant = 'body2'>
                                                     {resource.author.id == user.id? 'Me' : resource.author.first_name + " " + resource.author.last_name}</Typography>
-                                            </Box>
+                                            </Stack>
+                                            <Stack  direction = "row" alignItems= "center" spacing={1}>
+                                                <GppGoodIcon/> 
+                                                <Typography variant = 'body2'>{resource.author.trust_rating} </Typography> 
+                                            </Stack> 
                                         </CardContent>
                                         <CardActions style = {{justifyContent: 'center'}}>
                                             <Button variant ='contained' onClick = {() => downloadFile(resource.resource)}>Download</Button>

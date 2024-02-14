@@ -14,6 +14,7 @@ from rest_framework.serializers import ValidationError
 from django.core.files import File
 from django.http import HttpResponse
 from ProjectResourceShare.settings import MEDIA_ROOT
+from .utils import CalculateTrustRating, RecalculateTrustRating, IncrementDownloadCount
 
 # Create your views here.
 import logging
@@ -73,16 +74,16 @@ class CreateModuleView(APIView):
 class CreateUserView(APIView):
     def post(self, request):
         try:
-            print(request.data)
+            logger.info(request.data)
             serializer = UserSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         except ValidationError as e:
-            print(f"An error occurred: {e}")
+            logger.info(f"An error occurred: {e}")
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            print(f"An error occurred: {e}")
+            logger.info(f"An error occurred: {e}")
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 class GetUniversityView(APIView):
@@ -179,7 +180,7 @@ class EnrollUserView(APIView):
 
 class DownloadPDFView(APIView):
     def get(self, request, fileName):
-        
+        IncrementDownloadCount(request.user.id)
         path_to_file = MEDIA_ROOT + "/uploads/" + fileName
         logger.info('path_to_file:')
         logger.info(path_to_file)
@@ -205,6 +206,7 @@ class RatingView(APIView):
             serializer = RatingCreateSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
             serializer.save()
+            RecalculateTrustRating()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         except ValidationError as e:
             logger.error(f"An error occurred: {e}")
@@ -212,7 +214,24 @@ class RatingView(APIView):
         except Exception as e:
             logger.error(f"An error occurred: {e}")
             return Response(status=status.HTTP_400_BAD_REQUEST)
-    
+        
+'''
+class TrustRatingView(APIView):
+    def post(self, request):
+        try:
+            user = CustomUser.objects.get(id=request.user.id)
+            trustRatingValue = calculate_trust_rating(user.id)
+            trustRatingInstance = 
+            
+
+            serializer = RatingCreateSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            logger.error(f"An error occurred: {e}")
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+'''
 
         
         
