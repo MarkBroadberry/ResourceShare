@@ -191,7 +191,7 @@ class DownloadPDFView(APIView):
         response['Content-Disposition'] = 'attachment'
         return response
     
-
+#gets ratings based on a resource in the url
 class RatingView(APIView):
     #serializer_class = RatingSerializer
 
@@ -214,6 +214,17 @@ class RatingView(APIView):
         except Exception as e:
             logger.error(f"An error occurred: {e}")
             return Response(status=status.HTTP_400_BAD_REQUEST)
+        
+#gets all ratings. 
+class RatingListView(APIView):
+    def get(self, request):
+        ratings = Rating.objects.all()
+        serializer = RatingSerializer(ratings, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+
+
         
 '''
 class TrustRatingView(APIView):

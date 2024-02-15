@@ -15,6 +15,7 @@ export default function ResourceRatings() {
     const [newRating, setNewRating] = useState("");
     const [user, setUser] = useState({});
     const [ratingComment, setRatingComment] = useState("");
+    const [userHasRated, setUserHasRated] = useState(false);
 
     const location = useLocation();
     const navigate = useNavigate();
@@ -41,6 +42,14 @@ export default function ResourceRatings() {
             console.log("error fetching user data: ", error);
         });
         }, [user.id, resource.id]);
+
+    useEffect(()=>{
+        for (let i = 0; i < ratings.length; i ++){
+            if (ratings[i].author.id === user.id){
+                setUserHasRated(true);
+            }
+        }
+    },[ratings])
 
     const AddRatingRequest = () =>({
         'author': user.id,
@@ -70,7 +79,7 @@ export default function ResourceRatings() {
         <Box sx = {{height: '10%'}}></Box>
         <Typography variant = "h3">Ratings for {resource.name}</Typography>
         {/*If it's your resource and you are viewing, hide input and output view message*/
-        resource.author.id == user.id ? (
+        (resource.author.id == user.id || userHasRated) ? (
             <Typography variant = "h4">View Other Students Ratings of <FilePresentIcon/>{resource.name}</Typography>
             ) : (
             <Box sx = {{marginTop: "2%"}}>
@@ -114,7 +123,7 @@ export default function ResourceRatings() {
                 return(
                     <Card sx = {{width: '40%'}} key = {rating.id}>
                         <CardContent sx ={{display:'flex', justifyContent:'space-between'}}>
-                            <Typography> <PersonIcon/>{rating.author.first_name} {rating.author.last_name}</Typography>
+                            <Typography> <PersonIcon/>{rating.author.id == user.id ? "Me" : rating.author.first_name + " " + rating.author.last_name}</Typography>
                             {/*<Typography>{rating.rating}</Typography>*/}
                             <Rating name="viewedRating" value = {rating.rating} precision={0.5} readOnly />
                             <Typography>{rating.comment}</Typography>

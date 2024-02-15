@@ -23,4 +23,6 @@ urlpatterns = [
     path('download/<str:fileName>/', views.DownloadPDFView.as_view(), name = "download_pdf"),
     path('getRatings/<int:resourceId>/', views.RatingView.as_view(), name = "get_ratings"),
     path('createRating/', views.RatingView.as_view(), name = "create_rating"),
+    path('getRatingList/', views.RatingListView.as_view(), name = "get_rating_list"),
+
 ]

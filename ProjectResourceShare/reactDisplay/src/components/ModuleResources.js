@@ -19,6 +19,9 @@ export default function ModuleResources(){
         const [user, setUser] = useState({});
         const [fileResetKey, setFileResetKey] = useState(0);
         const [resources, setResources] = useState([]);
+        //const [ratings, setRatings] = useState([]);
+        //const [userRatedResources, setUserRatedResources] = useState([]);
+
         
         const location = useLocation();
         const navigate = useNavigate();
@@ -36,6 +39,29 @@ export default function ModuleResources(){
         .catch((error) =>{
             console.log("error fetching user data: ", error);
         });
+        /*
+        myAxiosInstance.get(`getRatingList/`).then((response) =>{
+            //check if they have rated.
+            console.log("ratings: " , response.data);
+            setRatings(response.data);
+            console.log("set ratings complete");
+            console.log("user id, ",  user.id)
+
+            for( let i = 0; i < ratings.length ; i++){
+                console.log("rating id: ", ratings[i].rating);
+                if (ratings[i].author.id == user.id){
+                    if (!userRatedResources.includes(ratings[i].resource.id)){
+                        setUserRatedResources(prevState => [...prevState, ratings[i].resource.id]);
+                        console.log("in userRateResources loop");
+                    }
+                }
+            }
+            console.log("userRatedResources:", userRatedResources);
+        })
+        .catch((error) =>{
+            console.error("error fetching resources data: ", error);
+        });
+        */
         },[user.id] );
 
         useEffect( () =>{
@@ -50,7 +76,9 @@ export default function ModuleResources(){
             })
             .catch((error) =>{
                 console.error("error fetching resources data: ", error);
-            });
+            });       
+        
+        
         }, []);
 
         const handleFileChange = (e) =>{
@@ -105,7 +133,6 @@ export default function ModuleResources(){
         }
 
         const handleRedirect = (chosenResource) => navigate('/ResourceRatings',{state: chosenResource});
-
 
         return (
             <>

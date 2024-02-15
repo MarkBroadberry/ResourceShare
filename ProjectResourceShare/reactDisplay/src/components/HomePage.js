@@ -8,7 +8,8 @@ import ModuleSearch from './subComponents/ModuleSearch';
 import GppGoodIcon from '@mui/icons-material/GppGood';
 import PersonIcon from '@mui/icons-material/Person';
 import SchoolIcon from '@mui/icons-material/School';
-
+import Carousel from 'react-multi-carousel';
+import "react-multi-carousel/lib/styles.css";
 
 
 export default function Homepage(){
@@ -20,6 +21,29 @@ export default function Homepage(){
     const [university, setUniversity] = useState({});
     const [userModules, setUserModules] = useState([]);
     const [moduleList, setModuleList] = useState([]);
+
+
+    // for Carousel component - defines how many modules are shown in the module component for diff resoultions. 
+    const responsive = {
+        LargeDesktop: {
+          // the naming can be any, depends on you.
+          breakpoint: { max: 4000, min: 3000 },
+          items: 5
+        },
+        Desktop: {
+          breakpoint: { max: 3000, min: 1024 },
+          items: 4
+        },
+        Tablet: {
+          breakpoint: { max: 1024, min: 464 },
+          items: 3
+        },
+        Mobile: {
+          breakpoint: { max: 464, min: 0 },
+          items: 3
+        }
+      };
+
     
 
     const AddModuleFormSubmit = (event) => {
@@ -81,43 +105,44 @@ export default function Homepage(){
                 <Stack spacing = {1}> 
                     <h3><PersonIcon/> {user.first_name} {user.last_name}</h3>
                     <h4><SchoolIcon/> {university.name}</h4>
-                    <Box sx = {{display: 'flex'}}>
+                    <Box sx = {{display: 'flex', justifyContent: 'center'}}>
                         <GppGoodIcon/> {user.trust_rating}
                     </Box>
                 </Stack>
             </div>
             <Typography variant = "h3">My Courses</Typography>
-        <Box /*Module Section*/ sx = {{display: 'flex', width: '100%'}}>
-            <Stack direction = "row" spacing = {2} sx = {{width: "45%", overflow: "auto"}}>
-                {userModules.length=== 0 && (
-                <Typography>
-                    You are not enrolled in any Modules Yet!
-                </Typography>)}
-
-                {userModules.map(function(module, i){
-                    return (
-                        <Box key = {i} sx = {{minWidth: '20%', minHeight: '90%'}}>
-                            <Card sx = {{width: '100%', overflowX: 'auto'}}>    
-                                <CardContent sx = {{height: '60%'}}>
-                                    <Typography sx = {{fontSize: 14}} color = "text.secondary">
-                                        Module
-                                    </Typography>
-                                    <Typography variant = "h6">
-                                        {module.name} 
-                                    </Typography>
-                                </CardContent>
-                                <CardActions>
-                                    <Button sx = {{height : '20%'}} size = 'small' variant = 'contained' onClick={() => handleRedirect(module)}>
-                                        See Resources
-                                    </Button>
-                                </CardActions>
-                                    
-                                
-
-                            </Card>
-                        </Box>)
-                })}
-            </Stack>
+        <Box /*Module Section*/ sx = {{display: 'block', width: '65%'}}>
+            
+                
+                    {userModules.length=== 0 && (
+                    <Typography>
+                        You are not enrolled in any Modules Yet!
+                    </Typography>)}
+                    
+                <Carousel responsive = {responsive} containerClass='carousel-container'>
+                    
+                    {userModules.map(function(module, i){
+                        return (
+                            <Box key = {i} sx = {{minWidth: '26%', minHeight: '90%', justifyContent: 'center', alignItems: 'center'}}>
+                                <Card sx = {{width: '100%', overflowX: 'auto'}}>    
+                                    <CardContent sx = {{height: '60%'}}>
+                                        <Typography sx = {{fontSize: 14}} color = "text.secondary">
+                                            Module
+                                        </Typography>
+                                        <Typography variant = "h6">
+                                            {module.name} 
+                                        </Typography>
+                                    </CardContent>
+                                    <CardActions>
+                                        <Button sx = {{height : '20%'}} size = 'small' variant = 'contained' onClick={() => handleRedirect(module)}>
+                                            See Resources
+                                        </Button>
+                                    </CardActions>
+                                </Card>
+                            </Box>)
+                    })}
+                
+                </Carousel>
 
             <Box /*Module Search*/sx = {{width: '50%', height: 250, overflowY :'auto', border: 2, borderColor: 'gray', borderRadius: '10px'}}>
                 <h4 className = "SearchTitle"> Enroll Into a Module </h4>
