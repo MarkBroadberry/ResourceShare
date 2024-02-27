@@ -121,4 +121,58 @@ class RatingCreateSerializer(serializers.ModelSerializer):
 
         return rating_instance
 
+
+class GetSavedResourceSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+    resource = ResourceFetchSerializer()
+    #nested serializer so we can get the whole 
+    class Meta:
+        model = models.SavedResource
+        fields = ['id', 'user','resource','saved_at']
+        depth = 1
+    def create(self, validated_data):
+        savedResource = models.SavedResource.objects.create(**validated_data)
+        return savedResource
+
+
+
+class CreateSavedResourceSerializer(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(queryset=models.CustomUser.objects.all())
+    resource = serializers.PrimaryKeyRelatedField(queryset=models.Resource.objects.all())
+
+    class Meta:
+        model = models.SavedResource
+        fields = ['id', 'user','resource','saved_at']
+        depth = 1
+    def create(self, validated_data):
+        savedResource = models.SavedResource.objects.create(**validated_data)
+        return savedResource
+    
+
+
+
+class CreateTrustRelationshipSerializer(serializers.ModelSerializer):
+    trustee = serializers.PrimaryKeyRelatedField(queryset=models.CustomUser.objects.all())
+    trustor = serializers.PrimaryKeyRelatedField(queryset=models.CustomUser.objects.all())
+    relatedResource = serializers.PrimaryKeyRelatedField(queryset=models.Resource.objects.all())
+    class Meta:
+        model = models.TrustRelationship
+        fields = ['id', 'trustor','trustee','weight', 'type', 'relatedResource']
+        depth = 1
+    def create(self, validated_data):
+        trustRelationship = models.TrustRelationship.objects.create(**validated_data)
+        return trustRelationship
+    
+    
+class GetTrustRelationshipSerializer(serializers.ModelSerializer):
+    trustee = UserSerializer()
+    trustor = UserSerializer()
+    relatedResource = ResourceFetchSerializer()
+    #nested serializer so we can get the whole 
+    class Meta:
+        model = models.TrustRelationship
+        fields = ['id', 'trustor','trustee','weight', 'type', 'relatedResource']
+        depth = 1
+    
+
     

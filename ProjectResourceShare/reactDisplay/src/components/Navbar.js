@@ -43,8 +43,11 @@ const useStyles = makeStyles((theme) => ({
           <MenuItem component={Link} to = "/uploads">
             My Uploads
           </MenuItem>
-          <MenuItem component={Link} to = "/saved">
+          <MenuItem component={Link} to = "/Saved">
             Saved Resources
+          </MenuItem>
+          <MenuItem component={Link} to = "/TrustGraph">
+            Trust Graph
           </MenuItem>
           {/*Could you use useEffect here w/ dependancy array to make it rerender when isAuthorized changes */}
         {isAuthorized ? (

@@ -145,7 +145,11 @@ h4{
 
 .carousel-container{
   width: 100%;
+  padding-left: 0;
+  margin-left: 0;
 }
 .carousel-item{
-  padding-right: 10px;
+  padding-right: 0.5%;
+  max-width: 20%;
+  min-width: 20%;
 }

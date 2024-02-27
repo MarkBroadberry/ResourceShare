@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import generics, status
 from .serializers import * #ModuleSerializer, UserSerializer, MyTokenObtainPairSerializer, UniversitySerializer, Res
-from ResourceShare.models import Module, CustomUser, University, Resource, Rating
+from ResourceShare.models import Module, CustomUser, University, Resource, Rating, SavedResource, TrustRelationship
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -14,7 +14,7 @@ from rest_framework.serializers import ValidationError
 from django.core.files import File
 from django.http import HttpResponse
 from ProjectResourceShare.settings import MEDIA_ROOT
-from .utils import CalculateTrustRating, RecalculateTrustRating, IncrementDownloadCount
+from .utils import CalculateTrustRating, RecalculateTrustRating, IncrementDownloadCount, CalculateTransativeTrust
 
 # Create your views here.
 import logging
@@ -146,7 +146,6 @@ class ResourceUploadView(APIView):
             serializer = self.serializer_class(data=request.data)
             logger.info(request.data)
             serializer.is_valid(raise_exception=True)
-            
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         except Exception as e:
@@ -221,28 +220,90 @@ class RatingListView(APIView):
         ratings = Rating.objects.all()
         serializer = RatingSerializer(ratings, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
 
-
-
-
-        
-'''
-class TrustRatingView(APIView):
+class SavedResourceView(APIView):
     def post(self, request):
         try:
-            user = CustomUser.objects.get(id=request.user.id)
-            trustRatingValue = calculate_trust_rating(user.id)
-            trustRatingInstance = 
-            
-
-            serializer = RatingCreateSerializer(data=request.data)
+            serializer = CreateSavedResourceSerializer(data=request.data)
+            logger.info(request.data)
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         except Exception as e:
             logger.error(f"An error occurred: {e}")
             return Response(status=status.HTTP_400_BAD_REQUEST)
-'''
+        
+    def get(self, request, userId):
+        savedResource = SavedResource.objects.filter(user = userId)
+        serializer = GetSavedResourceSerializer(savedResource, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class UnsaveResourceView(APIView):
+    def post(self, request):
+        try:
+            resourceId = request.data.get('resource')
+            userId = request.data.get('user')
+            resourceInstance = SavedResource.objects.get(user=userId, resource=resourceId)
+            resourceInstance.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)       
+        except Exception as e: 
+            logger.error(f"An error occured: {e}")
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        
+
+
+class TrustRelationshipView(APIView):
+    def post(self, request):
+        try:       
+            logger.info(request.data)
+            weight = request.data.get('weight')
+            trustor = request.data.get('trustor')
+            trustee = request.data.get('trustee')
+            transativeTrust = CalculateTransativeTrust(weight, trustor, trustee)
+            request.data['weight'] = transativeTrust
+            serializer = CreateTrustRelationshipSerializer(data=request.data)
+            
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            logger.info(f"An error occurred: {e}")
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        
+    def get(self, request):
+        try: 
+            trustRelationships = TrustRelationship.objects.all()
+            serializer = GetTrustRelationshipSerializer(trustRelationships, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            logger.info(f"an error occured: {e}")
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        
+
+
+class RemoveTrustRelationshipView(APIView):
+    def post(self, request):
+        try:
+            logger.info("remove trust relationship data:", request.data)
+            trusteeId = request.data.get('trustee')
+            trustorId = request.data.get('trustor')
+            requestWeight = request.data.get('weight')
+            requestType = request.data.get('type')
+            relatedResource = request.data.get('relatedResource')
+            trustRelationshipInstance = TrustRelationship.objects.get(trustor = trustorId, trustee = trusteeId, type = requestType, weight = requestWeight, relatedResource = relatedResource)
+            trustRelationshipInstance.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)       
+        except Exception as e: 
+            logger.error(f"An error occured: {e}")
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+    
+
+
+        
+
 
         
         

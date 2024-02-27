@@ -10,6 +10,8 @@ import Logout from "./Logout";
 import ModuleResources from "./ModuleResources";
 import { StrictMode } from "react";
 import ResourceRatings from "./ResourceRatings";
+import SavedResources from "./SavedResources";
+import TrustGraphPage from "./TrustGraphPage";
 
 export const Context = React.createContext();
 
@@ -35,6 +37,8 @@ export default function App() {
                         <Route exact path = "/logout" element = {<Logout/>} />
                         <Route exact path = "/ModuleResources" element = {<ModuleResources/>} />
                         <Route exact path = "/ResourceRatings" element = {<ResourceRatings/>} />
+                        <Route exact path = "/Saved" element = {<SavedResources/>} />
+                        <Route exact path = "/TrustGraph" element = {<TrustGraphPage/>}/>
                     </Routes>
                 </BrowserRouter>
             </Context.Provider>

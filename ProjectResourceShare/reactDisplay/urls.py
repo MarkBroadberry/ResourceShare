@@ -8,4 +8,6 @@ urlpatterns = [
     path('login', index),
     path('ModuleResources', index),
     path('ResourceRatings', index),
+    path('Saved', index), 
+    path('TrustGraph', index),
 ]

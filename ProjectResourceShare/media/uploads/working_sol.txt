@@ -1,0 +1,60 @@
+#!/bin/python3
+
+import math
+import os
+import random
+import re
+import sys
+
+#
+# Complete the 'hourglassSum' function below.
+#
+# The function is expected to return an INTEGER.
+# The function accepts 2D_INTEGER_ARRAY arr as parameter.
+#
+
+def hourglassSum(arr):
+    hourglassMax = 0
+    rowOffset = 0
+    columnOffset = 0
+    
+    #currentCol = columnOffset + 0
+    currentRow = rowOffset + 0
+    sum1 = arr[currentRow][columnOffset + 0] + arr[currentRow][columnOffset + 1] + arr[currentRow][columnOffset + 2]
+    sum2 = arr[currentRow + 1][columnOffset + 1]
+    sum3 = arr[currentRow + 2][columnOffset + 0] + arr[currentRow + 2][columnOffset + 1] + arr[currentRow + 2][columnOffset + 2]
+    
+    
+    
+    for j in range(4):
+        for i in range(4):
+            print("calculating: row: " + str(currentRow) + " col: " + str(columnOffset))
+            currentSum = sum1 + sum2 + sum3
+            
+            print("sum1 indices: " + str(arr[currentRow][columnOffset + 0]) + str(arr[currentRow][columnOffset + 1]) + str(arr[currentRow][columnOffset + 2]))
+            print("sum2 indices: " + str(arr[currentRow + 1][columnOffset + 1]))
+            print("sum3 indices: " + str(arr[currentRow + 2][columnOffset + 0]) + str(arr[currentRow + 2][columnOffset + 1]) + str(arr[currentRow + 2][columnOffset + 2]))
+            
+            print("hourglass sum = " + str(currentSum))
+            if currentSum > hourglassMax:
+                hourglassMax = currentSum
+            columnOffset += 1
+        currentRow += 1
+        columnOffset = 0
+    return hourglassMax
+
+    # Write your code here
+
+if __name__ == '__main__':
+    fptr = open(os.environ['OUTPUT_PATH'], 'w')
+
+    arr = []
+
+    for _ in range(6):
+        arr.append(list(map(int, input().rstrip().split())))
+
+    result = hourglassSum(arr)
+
+    fptr.write(str(result) + '\n')
+
+    fptr.close()

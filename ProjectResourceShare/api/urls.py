@@ -24,5 +24,10 @@ urlpatterns = [
     path('getRatings/<int:resourceId>/', views.RatingView.as_view(), name = "get_ratings"),
     path('createRating/', views.RatingView.as_view(), name = "create_rating"),
     path('getRatingList/', views.RatingListView.as_view(), name = "get_rating_list"),
-
+    path('SavedResources/<str:userId>/', views.SavedResourceView.as_view(), name = "get_saved_resource"),
+    path('createSavedResource/', views.SavedResourceView.as_view(), name = "create_saved_resource"),
+    path('unsaveResource/', views.UnsaveResourceView.as_view(), name = "unsave_resource"),
+    path('createTrustRelationship/', views.TrustRelationshipView.as_view(), name = "create_trust_relationship"),
+    path('getTrustRelationshipList/', views.TrustRelationshipView.as_view(), name = "get_trust_relationshipList"),
+    path('deleteTrustRelationship/', views.RemoveTrustRelationshipView.as_view(), name = "remove_trust_relationshipList"),
 ]

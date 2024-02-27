@@ -10,6 +10,10 @@ import fileDownload from 'js-file-download';
 import FilePresentIcon from '@mui/icons-material/FilePresent';
 import PersonIcon from '@mui/icons-material/Person';
 import GppGoodIcon from '@mui/icons-material/GppGood';
+import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
+import BookmarkIcon from '@mui/icons-material/Bookmark';
+import Carousel from 'react-multi-carousel';
+import '../../static/css/index.css';
 
 
 export default function ModuleResources(){
@@ -19,8 +23,31 @@ export default function ModuleResources(){
         const [user, setUser] = useState({});
         const [fileResetKey, setFileResetKey] = useState(0);
         const [resources, setResources] = useState([]);
+        const [iconClickedList, setIconClickedList] = useState([]);
+        const [savedResources, setSavedResources] = useState([]);
         //const [ratings, setRatings] = useState([]);
         //const [userRatedResources, setUserRatedResources] = useState([]);
+
+
+        const responsive = {
+            LargeDesktop: {
+              // the naming can be any, depends on you.
+              breakpoint: { max: 4000, min: 3000 },
+              items: 5
+            },
+            Desktop: {
+              breakpoint: { max: 3000, min: 1024 },
+              items: 4
+            },
+            Tablet: {
+              breakpoint: { max: 1024, min: 464 },
+              items: 3
+            },
+            Mobile: {
+              breakpoint: { max: 464, min: 0 },
+              items: 3
+            }
+          };
 
         
         const location = useLocation();
@@ -39,29 +66,6 @@ export default function ModuleResources(){
         .catch((error) =>{
             console.log("error fetching user data: ", error);
         });
-        /*
-        myAxiosInstance.get(`getRatingList/`).then((response) =>{
-            //check if they have rated.
-            console.log("ratings: " , response.data);
-            setRatings(response.data);
-            console.log("set ratings complete");
-            console.log("user id, ",  user.id)
-
-            for( let i = 0; i < ratings.length ; i++){
-                console.log("rating id: ", ratings[i].rating);
-                if (ratings[i].author.id == user.id){
-                    if (!userRatedResources.includes(ratings[i].resource.id)){
-                        setUserRatedResources(prevState => [...prevState, ratings[i].resource.id]);
-                        console.log("in userRateResources loop");
-                    }
-                }
-            }
-            console.log("userRatedResources:", userRatedResources);
-        })
-        .catch((error) =>{
-            console.error("error fetching resources data: ", error);
-        });
-        */
         },[user.id] );
 
         useEffect( () =>{
@@ -76,10 +80,25 @@ export default function ModuleResources(){
             })
             .catch((error) =>{
                 console.error("error fetching resources data: ", error);
-            });       
-        
-        
+            }); 
         }, []);
+
+
+
+        useEffect(()=>{
+            if(user.id){
+                myAxiosInstance.get(`SavedResources/${user.id}/`).then((response) =>{
+                    console.log("Saved Resources: ", response.data)  
+                    for(let i = 0; i < response.data.length; i++){
+                            setSavedResources(prev => [...prev, response.data[i].resource.id]);
+                    }
+                    //setSavedResources(response.data)
+                    console.log("just ids list: ", savedResources);
+                }).catch((error)=>{
+                    console.log("error occured fetching saved resources: ", error)
+                });
+            }
+        }, [user.id])
 
         const handleFileChange = (e) =>{
             console.log(e.target.files[0]);
@@ -134,6 +153,41 @@ export default function ModuleResources(){
 
         const handleRedirect = (chosenResource) => navigate('/ResourceRatings',{state: chosenResource});
 
+        const handleIconClick = (resource) =>{
+            let resourceId = resource.id
+            setIconClickedList(prev => [...prev, resourceId]);
+            myAxiosInstance.post(`createSavedResource/`, {user: user.id, resource: resourceId}).then((response) =>{
+                console.log("saved resource: ", response.data);
+            })
+            .catch((error) =>{
+                console.error("error setting saved resource: ", error);
+            });     
+            myAxiosInstance.post(`createTrustRelationship/`, {trustor: user.id, trustee: resource.author.id, weight: 4, type: 'Saved', relatedResource: resourceId}).then((response) =>{
+                console.log("Create Resource: ", response.data);
+            })
+            .catch((error) =>{
+                console.error("error setting saved resource: ", error);
+            });              
+        }
+
+        const handleUnsaveClick = (resource) =>{
+            let resourceId = resource.id
+            setIconClickedList(iconClickedList.filter((id) => id !== resourceId));
+            setSavedResources(savedResources.filter((id) => id !== resourceId));
+            myAxiosInstance.post(`unsaveResource/`, {user: user.id, resource: resourceId}).then((response) =>{
+                console.log("unsaved resource: ", response);
+            })
+            .catch((error) =>{
+                console.error("error unsaving resource: ", error);
+            }); 
+            myAxiosInstance.post(`deleteTrustRelationship/`, {trustor: user.id, trustee: resource.author.id, weight: 4, type: 'Saved', relatedResource: resourceId}).then((response) =>{
+                console.log("deleted trust relationship: ", response);
+            })
+            .catch((error) =>{
+                console.error("error deleting trust relationship: ", error);
+            });  
+
+        }
         return (
             <>
                 <div className='ModuleResourceTitles'>
@@ -141,11 +195,9 @@ export default function ModuleResources(){
                 </div>
 
                 <h3>Resources for this Module</h3>
-
-                    <List component = {Stack} spacing = {2} direction = "row" style = {{overflow: 'auto'}}>
+                    <Carousel responsive={responsive} containerClass='carousel-container' itemClass='carousel-item'>
                         {resources.map(function(resource){
                             return(
-                                <ListItem key = {resource.id}>
                                     <Card sx = {{width: '100%', height: '100%'}} key = {resource.id}>
                                         <CardContent>
                                             <Box style = {{display:'flex', marginBottom: '2%', justifyContent: 'center'}}>
@@ -161,25 +213,34 @@ export default function ModuleResources(){
                                                 </Box>
                                             </Box>
                                             <iframe src={resource.resource}/>
-                                            <Stack direction = "row" alignItems= "center" spacing={1}>
-                                                <PersonIcon/>
-                                                <Typography variant = 'body2'>
-                                                    {resource.author.id == user.id? 'Me' : resource.author.first_name + " " + resource.author.last_name}</Typography>
-                                            </Stack>
-                                            <Stack  direction = "row" alignItems= "center" spacing={1}>
-                                                <GppGoodIcon/> 
-                                                <Typography variant = 'body2'>{resource.author.trust_rating} </Typography> 
-                                            </Stack> 
+                                            <Box sx = {{display: 'flex' ,justifyContent: 'space-between'}}>
+                                                <Box>
+                                                    <Stack direction = "row" alignItems= "center" spacing={1}>
+                                                        <PersonIcon/>
+                                                        <Typography variant = 'body2'>
+                                                            {resource.author.id == user.id? 'Me' : resource.author.first_name + " " + resource.author.last_name}</Typography>
+                                                    </Stack>
+                                                    <Stack  direction = "row" alignItems= "center" spacing={1}>
+                                                        <GppGoodIcon/> 
+                                                        <Typography variant = 'body2'>{resource.author.trust_rating} </Typography> 
+                                                    </Stack> 
+                                                </Box>
+                                                <Box>
+                                                    {iconClickedList.includes(resource.id) || savedResources.includes(resource.id)? (
+                                                         <BookmarkIcon sx = {{fontSize: '3rem'}} onClick = {() => handleUnsaveClick(resource)}/>
+                                                    ):   <BookmarkBorderIcon sx = {{fontSize: '3rem'}} onClick={() => handleIconClick(resource)}/>
+                                                    }
+                                                   
+                                                </Box>
+                                            </Box>
                                         </CardContent>
                                         <CardActions style = {{justifyContent: 'center'}}>
                                             <Button variant ='contained' onClick = {() => downloadFile(resource.resource)}>Download</Button>
                                         </CardActions>
-                                        {/*</Stack>*/}
                                     </Card>
-                                </ListItem>
                             )
                         })}
-                    </List>
+                    </Carousel>
                 <Typography variant = 'h6'>Upload a new Resource to the {module.name} module</Typography>
                 <form onSubmit={handleSubmit} encType="multipart/form-data">
                     <TextField 

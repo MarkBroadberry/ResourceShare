@@ -58,17 +58,32 @@ export default function ResourceRatings() {
         'comment': ratingComment
     });
 
+    const AddTrustRelationshipRequest = () => ({
+        'trustor': user.id ,
+        'trustee': resource.author.id,
+        'weight': newRating,
+        'type': 'Rating',
+        'relatedResource':resource.id
+    });
+
     const handleAddRating = async(e) => {
             e.preventDefault();
             try{
-            const requestData = AddRatingRequest();
-            myAxiosInstance.post(`createRating/`, requestData).then((response) => {
-                console.log("response:", response)
+            const AddRatingRequestData = AddRatingRequest();
+            myAxiosInstance.post(`createRating/`, AddRatingRequestData).then((response) => {
+                console.log("response:", response);
                 setNewRating("");
                 setRatingComment("");
             })
             .catch((error)=>{
-                console.log("Error adding rating: ", error)
+                console.log("Error adding rating: ", error);
+            })
+
+            const AddTrustRelationshipRequestData = AddTrustRelationshipRequest();
+            myAxiosInstance.post(`createTrustRelationship/`, AddTrustRelationshipRequestData).then((response)=> {
+                console.log("Trust Relationsip Create Response: ", response);
+            }).catch((error)=>{
+                console.log("Error adding Trust Relationship: ", error);
             })
         }catch(error){
             console.log("Create Rating error: ", e);
