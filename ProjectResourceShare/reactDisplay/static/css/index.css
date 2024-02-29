@@ -1,5 +1,6 @@
 body{
-  font-family: Verdana, Geneva, Tahoma, sans-serif
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  margin-left: 0;
 }
 .CenterForm {
     width: 33.33%;
@@ -99,11 +100,6 @@ body{
 }
 
 
-.SearchTitle{
-  margin-top: 0;
-  margin-bottom: 5px;
-}
-
 .EnrolledCheck{
   border: 2px solid rgb(168, 168, 168);
   border-radius: 5px;
@@ -145,11 +141,22 @@ h4{
 
 .carousel-container{
   width: 100%;
-  padding-left: 0;
-  margin-left: 0;
 }
-.carousel-item{
-  padding-right: 0.5%;
-  max-width: 20%;
-  min-width: 20%;
+
+.moduleCarouselItem{
+  padding-right: 1%;
+  max-width:8%;
+}
+
+.resourceCarouselItem{
+  padding-right: 1%;
+}
+
+.resourceImage{
+  width:100%;
+  height: 47%
+}
+
+html{
+  height: 100%
 }

@@ -42,6 +42,7 @@ class Resource(models.Model):
     resource = models.FileField(upload_to="uploads/")
     module = models.ForeignKey(Module, on_delete=models.CASCADE)
     author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    type = models.TextField(max_length = 512, default = 'Other')
 
 class Rating(models.Model):
     resource = models.ForeignKey(Resource, on_delete=models.CASCADE)

@@ -111,7 +111,17 @@ export const drawTrustGraph = (
             const arcRadius = Math.sqrt((target.y - source.y) ** 2 + (target.x - source.x) ** 2) / 2;
             const lineWidth = link.weight;
             context.lineWidth = lineWidth;
-            context.strokeStyle = '#a1a1a1';
+
+            if (link.weight < 1.75){
+              context.strokeStyle = '#fc0000';
+            }else if(link.weight < 3.5){
+              context.strokeStyle = '#ffb730';
+
+            }else{
+              context.strokeStyle = '#06d411';
+            }
+            
+            
 
             //draw links
             context.beginPath();

@@ -14,7 +14,7 @@ function enroll(moduleId){
     })
 }
 
-export default function ModuleSearch({dataList, enrolledModules}) {
+export default function ModuleSearch({dataList, enrolledModules, height}) {
     const [searchValue,setSearchValue] = useState("");
    // const [userModuleIds, setUserModuleIds] = useState([]);
 
@@ -28,7 +28,7 @@ export default function ModuleSearch({dataList, enrolledModules}) {
     function searchList(){
         const displayFilter = filteredModules.map(function(module){
             return(
-        <Card key = {module.id} sx={{ maxWidth: 450, display: 'flex'}}>
+        <Card key = {module.id} style = {{marginLeft: '18%'}} sx={{ maxWidth: 450, display: 'flex'}}>
             <Box sx={{ display: 'flex', flexDirection: 'column', width: 350}}>
               <CardContent>
                 <Typography gutterBottom variant="h6" component="div">
@@ -62,18 +62,18 @@ export default function ModuleSearch({dataList, enrolledModules}) {
 
     }
   return (
-    <div>
+    <Box>
 
-        <TextField
+        <TextField sx = {{marginLeft: '35%', marginBottom: '3%'}}
         label = "Search existing Modules"
         value = {searchValue}
         onChange = {(e)=> setSearchValue(e.target.value)}
         >
         </TextField>
 
-        <div>
+        <Box sx = {{height: height, overflowY: 'auto'}}>
             {searchList()}
-        </div>
-    </div>
+        </Box>
+    </Box>
   )
 }

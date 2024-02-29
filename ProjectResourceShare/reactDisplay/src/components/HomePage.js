@@ -2,7 +2,7 @@ import {React, useState, useEffect} from 'react';
 import {Button, Stack, Box, Typography, Card, CardContent, CardActions , Paper} from "@mui/material";
 import myAxiosInstance from '../axios';
 import { TextField} from "@material-ui/core";
-import css from '../../static/css/index.css';
+import '../../static/css/index.css';
 import { useNavigate } from "react-router-dom";
 import ModuleSearch from './subComponents/ModuleSearch';
 import GppGoodIcon from '@mui/icons-material/GppGood';
@@ -108,89 +108,101 @@ export default function Homepage(){
     const handleRedirect = (chosenModule) => navigate('/ModuleResources',{state: chosenModule/*{id: chosenModule.id, name: chosenModule.name}*/})
 
     return(
-        <div className = "Container">
-            <Paper elevation = {3} sx = {{marginTop: '7%', width: '25%'}}> 
-                {isLoadingUserData?(
+        <Box sx = {{height: '200vh', display: 'flex', paddingTop: '4.5%'}}>
+            <Card sx = {{height: '200vh', width: '15%', marginLeft: '0', backgroundColor: '#669ef2' }}> 
+                {isLoadingUserData?( 
                     <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
                         <CircularProgress />
                     </Box>
                 ):(
-                    <>
-                        <Typography variant = "h5"><PersonIcon fontSize='inherit'/> {user.first_name} {user.last_name}</Typography>
-                        <Typography variant = "h5"><SchoolIcon fontSize= 'inherit'/> {university.name}</Typography>
+                    <Paper  sx = {{width: '90%', marginLeft: '5%', marginTop: '5%'}}elevation={2}>
+                        <Typography sx = {{fontWeight: 'bold'}}><PersonIcon fontSize='inherit'/> {user.first_name} {user.last_name}</Typography>
+                        <Typography sx = {{fontWeight: 'bold'}}><SchoolIcon fontSize= 'inherit'/> {university.name}</Typography>
                         <Box sx = {{display: 'flex', alignItems: 'center'}}>
-                            <GppGoodIcon fontSize='inherit'/> <Typography variant = "h5">{user.trust_rating}</Typography>
+                            <GppGoodIcon fontSize='inherit'/> <Typography variant = "h7">{user.trust_rating}</Typography>
                         </Box>
-                    </>
+                    </Paper>
                 )}
-            </Paper>
+            </Card>
                 
-            
-        <Box /*Module Section*/ sx = {{display: 'block', width: '80%', marginLeft: '10%', marginTop: '2%'}}>
-            <Typography variant = "h5" sx = {{fontFamily: 'Montserrat, sans-serif'}}>My Courses</Typography>
-          
-            {userModules.length=== 0 && (
-            <Typography>
-                You are not enrolled in any Modules Yet!
-            </Typography>)}
-            <Box sx = {{marginBottom:'2%'}}>
-                {isLoading ? (
-                    <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
-                        <CircularProgress />
-                    </Box>
-                ):
-                (
-                    <Carousel responsive = {responsive} containerClass='carousel-container' >
+            <Box sx = {{width : '85%'}}>
+                <Box /*Module Section*/ sx = {{display: 'block', marginTop: '2%', marginLeft:'2%'}}>
                     
-                        {userModules.map(function(module, i){
-                            return (
-                                <Box key = {i} sx = {{minWidth: '26%', minHeight: '90%', justifyContent: 'center', alignItems: 'center'}}>
-                                    <Card sx = {{width: '100%', overflowX: 'auto'}}>    
-                                        <CardContent sx = {{height: '60%'}}>
-                                            <Typography sx = {{fontSize: 14}} color = "text.secondary">
-                                                Module
-                                            </Typography>
-                                            <Typography variant = "h6">
-                                                {module.name} 
-                                            </Typography>
-                                        </CardContent>
-                                        <CardActions>
-                                            <Button sx = {{height : '20%'}} size = 'small' variant = 'contained' onClick={() => handleRedirect(module)}>
-                                                See Resources
-                                            </Button>
-                                        </CardActions>
-                                    </Card>
-                                </Box>)
-                        })}
-                
-                    </Carousel>
-                )}
+                        <Typography variant = "h4" sx = {{ marginLeft: '30%', fontFamily: 'Montserrat, sans-serif'}}>My Courses</Typography>
+                    <Box sx = {{display: 'flex'}}>
+                        
+                            {isLoading ? (
+                                <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+                                    <CircularProgress />
+                                </Box>
+                        ):
+                        (
+                        <>
+                            {userModules.length=== 0 && (
+                                <Typography variant = 'h4'>
+                                    You are not enrolled in any Modules Yet!
+                                </Typography>)
+                            }
+                            <Carousel responsive = {responsive} containerClass='carousel-container' itemClass = 'moduleCarouselItem' partialVisible = 'false' >
+                            
+                                {userModules.map(function(module, i){
+                                    return (
+                                        <Box key = {i} sx = {{height: '100%', justifyContent: 'center', alignItems: 'center'}}>
+                                            <Card sx = {{width: '100%', overflowX: 'auto'}}>    
+                                                <CardContent sx = {{height: '60%'}}>
+                                                    <Typography sx = {{fontSize: 14}} color = "text.secondary">
+                                                        Module
+                                                    </Typography>
+                                                    <Typography variant = "h6" sx = {{overflowX: 'auto'}}>
+                                                        {module.name} 
+                                                    </Typography>
+                                                </CardContent>
+                                                <CardActions>
+                                                    <Button sx = {{height : '20%'}} size = 'small' variant = 'contained' onClick={() => handleRedirect(module)}>
+                                                        See Resources
+                                                    </Button>
+                                                </CardActions>
+                                            </Card>
+                                        </Box>)
+                                })}
+                        
+                            </Carousel>
+                        </>
+                        )}
+                        
+                    
+                        <Paper elevation = {2} sx = {{marginLeft: '3%', marginTop: '3%', textAlign: 'center', height: '90%', border: 1}}>
+                            <form onSubmit = {AddModuleFormSubmit}>
+                                <Typography sx = {{fontWeight: 'bold'}}>Can't Find Your Modules? Add One!</Typography>
+                                <TextField
+                                label = "Type your Module Name"
+                                value = {moduleName}
+                                onChange = {(e)=> setModuleName(e.target.value)} ></TextField>
+                                <Button sx= {{ width: '20%', marginLeft: '20%' ,marginTop:'5%'}}variant='contained' type = "submit">Add</Button>
+                            </form>
+                        </Paper>
+                    </Box>
+                </Box>
+
+                <Box /*Module Search*/sx = {{width: '65%', marginTop : '7%', marginLeft: '3%', marginBottom: '40%'}}>
+                    <Typography variant = 'h4' sx = {{marginLeft: '30%', marginBottom: '2%'}}> Enroll Into a Module </Typography>
+                    {isLoadingEnrolledData?(
+                        <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+                            <CircularProgress />
+                        </Box>
+                    ):(
+                            <ModuleSearch height = '35%'dataList={moduleList} enrolledModules={userModules.map(module => module.id)}></ModuleSearch>
+                    )
+                    }
+                </Box>
+            
+
                 
             </Box>
+            <Box sx = {{height: '20%'}}> 
 
-            <Box /*Module Search*/sx = {{width: '50%', height: 250, overflowY :'auto', border: 2, borderColor: 'gray', borderRadius: '10px'}}>
-                <h4 className = "SearchTitle"> Enroll Into a Module </h4>
-                {isLoadingEnrolledData?(
-                    <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
-                        <CircularProgress />
-                    </Box>
-                ):(
-                    <ModuleSearch dataList={moduleList} enrolledModules={userModules.map(module => module.id)}></ModuleSearch>
-                )
-                }
             </Box>
         </Box>
-        
-
-            <form onSubmit = {AddModuleFormSubmit}>
-                <div>Can't Find Your Modules? Add One!</div>
-                <TextField
-                label = "Type your Module Name"
-                value = {moduleName}
-                onChange = {(e)=> setModuleName(e.target.value)} ></TextField>
-                <Button variant='contained' type = "submit">Add</Button>
-            </form>
-        </div>
 
     );
 }

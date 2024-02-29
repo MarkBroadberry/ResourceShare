@@ -8,6 +8,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 logger = logging.getLogger(__name__)
 
 class ModuleSerializer(serializers.ModelSerializer):
+    university = serializers.PrimaryKeyRelatedField(queryset=models.University.objects.all())
     class Meta:
         model = models.Module
         fields = '__all__'
@@ -79,7 +80,7 @@ class ResourceFetchSerializer(serializers.ModelSerializer):
     class Meta:
         depth = 2
         model = models.Resource
-        fields = ['id','name', 'description', 'resource', 'author', 'module']
+        fields = ['id','name', 'description', 'resource', 'author', 'module', 'type']
 
 
 class ResourceCreateSerializer(serializers.ModelSerializer):
@@ -88,7 +89,7 @@ class ResourceCreateSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = models.Resource
-        fields = ['name', 'description', 'resource', 'author', 'module']
+        fields = ['name', 'description', 'resource', 'author', 'module', 'type']
         #include related models up to one level deep - in this case include author.(customuser)
         depth = 1
         

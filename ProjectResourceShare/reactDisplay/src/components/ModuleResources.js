@@ -2,7 +2,7 @@ import React, { Component, useEffect } from 'react';
 import {useState} from 'react';
 import { useLocation, useNavigate } from "react-router-dom";
 import myAxiosInstance from '../axios';
-import { Button, TextField, Card, CardContent, CardActions, Typography, Box } from '@mui/material';
+import { Button, TextField, Card, CardContent, CardActions, Typography, Box, Paper, FormControl, InputLabel, Select, MenuItem, FormHelperText } from '@mui/material';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import Stack from '@mui/material/Stack';
@@ -14,7 +14,28 @@ import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import Carousel from 'react-multi-carousel';
 import '../../static/css/index.css';
+//import Other from '../../static/frontend/Other.jpg';
+import CircularProgress from '@mui/material/CircularProgress';
 
+
+//Images
+export const typeImages = {
+    LectureNotes: '../../static/images/LectureNotes.jpg',
+    Essay: '../../static/images/Essay.jpg',
+    Code: '../../static/images/Code.jpg',
+    Presentation: '../../static/images/Presentation.jpg',
+    FlashCards: '../../static/images/FlashCards.jpg',
+    Spreadsheet: '../../static/images/Spreadsheet.jpg',
+    Graph: '../../static/images/Graph.jpg',
+    Diagram: '../../static/images/Diagram.jpg',
+    Image: '../../static/images/Image.jpg',
+    PastPaper: '../../static/images/PastPaper.jpg',
+    ExamMarkScheme: '../../static/images/ExamMarkScheme.jpg',
+    RevisionNotes: '../../static/images/RevisionNotes.jpg',
+    Report: '../../static/images/Report.jpg',
+    Article: '../../static/images/Article.jpg',
+    Other: '../../static/images/Other.jpg'
+  };
 
 export default function ModuleResources(){
         const [fileName, setFileName] = useState("");
@@ -25,6 +46,12 @@ export default function ModuleResources(){
         const [resources, setResources] = useState([]);
         const [iconClickedList, setIconClickedList] = useState([]);
         const [savedResources, setSavedResources] = useState([]);
+        const [isLoading, setIsLoading] = useState(true);
+        const [type, setType] = useState("");
+
+      
+        
+
         //const [ratings, setRatings] = useState([]);
         //const [userRatedResources, setUserRatedResources] = useState([]);
 
@@ -73,9 +100,7 @@ export default function ModuleResources(){
             myAxiosInstance.get(`getResources/module/${module.id}/`).then((response) =>{
                 console.log("resources: ", response.data);
                 setResources(response.data);
-                console.log("author: ", response.data[0].author);
-                console.log("resource: ", response.data[0].resource);
-                console.log("resourceID: ", response.data[0].id);
+                setIsLoading(false);
                 /*myAxiosInstance.get('getUserDetail')*/
             })
             .catch((error) =>{
@@ -120,6 +145,7 @@ export default function ModuleResources(){
                 formData.append('resource', file);
                 formData.append('author', user.id);
                 formData.append('module', module.id);
+                formData.append('type', type);
                 console.log("form data appended", user.id, module.id)
 
                 myAxiosInstance.post('resourceUpload/', formData, {
@@ -186,8 +212,12 @@ export default function ModuleResources(){
             .catch((error) =>{
                 console.error("error deleting trust relationship: ", error);
             });  
-
         }
+
+        const handleTypeChange = (e) => {
+                setType(e.target.value);
+        };
+        
         return (
             <>
                 <div className='ModuleResourceTitles'>
@@ -195,24 +225,35 @@ export default function ModuleResources(){
                 </div>
 
                 <h3>Resources for this Module</h3>
-                    <Carousel responsive={responsive} containerClass='carousel-container' itemClass='carousel-item'>
+                {isLoading ?( 
+                    <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+                        <CircularProgress />
+                    </Box>
+                ):(
+                    resources.length === 0 ? (
+                        <Typography variant = 'h4'>
+                           Be the first to upload a resource for this module!
+                        </Typography>)
+                    : (
+                    <Carousel responsive={responsive} containerClass='carousel-container' itemClass='resourceCarouselItem' partialVisible='false'>
                         {resources.map(function(resource){
                             return(
                                     <Card sx = {{width: '100%', height: '100%'}} key = {resource.id}>
-                                        <CardContent>
-                                            <Box style = {{display:'flex', marginBottom: '2%', justifyContent: 'center'}}>
+                                        <CardContent sx = {{paddingBottom: '0'}}>
+                                            <Box style = {{display:'flex', marginBottom: '2%', justifyContent: 'center', height: '15%', overflowX: 'auto'}}>
                                                 <FilePresentIcon/>
-                                                <Typography>{resource.name}</Typography>
+                                                <Typography sx = {{width: '70%', overflowX: 'auto', fontWeight: 'bold'}}>{resource.name}</Typography>
                                                 <Box style = {{marginLeft : 'auto'}}>
                                                     <Button variant = 'contained' onClick={() => handleRedirect(resource)} style = {{fontSize: '0.6rem'}}>
                                                         {
                                                         /* Should be a View Ratings Page if you are the Author*/
-                                                        resource.author.id == user.id ? 'View Ratings' : 'Rate It'
+                                                        resource.author.id === user.id ? 'View Ratings' : 'Rate It'
                                                         }
                                                     </Button>
                                                 </Box>
                                             </Box>
-                                            <iframe src={resource.resource}/>
+                                            <img src = {typeImages[resource.type]} className='resourceImage'/>
+
                                             <Box sx = {{display: 'flex' ,justifyContent: 'space-between'}}>
                                                 <Box>
                                                     <Stack direction = "row" alignItems= "center" spacing={1}>
@@ -226,9 +267,15 @@ export default function ModuleResources(){
                                                     </Stack> 
                                                 </Box>
                                                 <Box>
-                                                    {iconClickedList.includes(resource.id) || savedResources.includes(resource.id)? (
-                                                         <BookmarkIcon sx = {{fontSize: '3rem'}} onClick = {() => handleUnsaveClick(resource)}/>
-                                                    ):   <BookmarkBorderIcon sx = {{fontSize: '3rem'}} onClick={() => handleIconClick(resource)}/>
+                                                    {/* you cant save your own resources, for the sake of the trust mechanism */}
+                                                    {
+                                                    resource.author.id != user.id &&
+                                                        (iconClickedList.includes(resource.id) || savedResources.includes(resource.id)? (
+                                                            <BookmarkIcon sx = {{fontSize: '3rem'}} onClick = {() => handleUnsaveClick(resource)}/>
+                                                          ) : (
+                                                            <BookmarkBorderIcon sx = {{fontSize: '3rem'}} onClick={() => handleIconClick(resource)}/>
+                                                            )
+                                                        )
                                                     }
                                                    
                                                 </Box>
@@ -241,23 +288,62 @@ export default function ModuleResources(){
                             )
                         })}
                     </Carousel>
-                <Typography variant = 'h6'>Upload a new Resource to the {module.name} module</Typography>
-                <form onSubmit={handleSubmit} encType="multipart/form-data">
-                    <TextField 
-                    label = "File Name"
-                    value = {fileName}
-                    onChange={(e)=> setFileName(e.target.value)}/>
-                    <TextField
-                    label = "File Description"
-                    value = {fileDescription}
-                    onChange={(e)=> setFileDescription(e.target.value)}/>
+                ))} 
+                  
+                <Paper elevation = {2} sx = {{marginBottom: '20%', width: '40%', marginLeft: '30%', marginTop: '4%'}}>
+                    <Typography variant = 'h6' sx = {{textAlign: 'center'}}>Upload a new Resource to the {module.name} module</Typography>
+                    <form onSubmit={handleSubmit} encType="multipart/form-data">
+                        <Box sx = {{display: 'flex'}}>
+                            <TextField 
+                            sx = {{marginRight: '2%', marginLeft: '3%'}}
+                            label = "File Name"
+                            value = {fileName}
+                            onChange={(e)=> setFileName(e.target.value)}/>
+                            <TextField
+                            label = "File Description"
+                            value = {fileDescription}
+                            onChange={(e)=> setFileDescription(e.target.value)}/>
+                        </Box>
+                        <Box sx = {{display: 'block'}}>
+                            <TextField
+                            type = "file"
+                            onChange={handleFileChange}
+                            key = {fileResetKey}
+                            sx ={{marginLeft: '13%', marginTop: '2%'}}/>
+                            <Box sx = {{marginLeft:'30%'}}>
+                                <FormControl sx={{ m: 1 }}>
+                                    <InputLabel>Resource Type</InputLabel>
+                                    <Select
+                                    labelId="typeHelperLabel"
+                                    id="resourceTypeSelect"
+                                    value={type}
+                                    label="Resource Type"
+                                    onChange={handleTypeChange}
+                                    >
+                                    <MenuItem value = {'LectureNotes'}>Lecture Notes</MenuItem>
+                                    <MenuItem value = {'Essay'}>Essay</MenuItem>
+                                    <MenuItem value = {'Code'}>Code</MenuItem>
+                                    <MenuItem value = {'Presentation'}>Presentation</MenuItem>
+                                    <MenuItem value = {'FlashCards'}>Flash Cards</MenuItem>
+                                    <MenuItem value = {'Spreadsheet'}>Spreadsheet</MenuItem>
+                                    <MenuItem value = {'Graph'}>Graph</MenuItem>
+                                    <MenuItem value = {'Diagram'}>Diagram</MenuItem>
+                                    <MenuItem value = {'Image'}>Image</MenuItem>
+                                    <MenuItem value = {'PastPaper'}>Past Paper</MenuItem>
+                                    <MenuItem value = {'ExamMarkScheme'}>Exam Mark Scheme</MenuItem>
+                                    <MenuItem value = {'RevisionNotes'}>Revision Notes</MenuItem>
+                                    <MenuItem value = {'Report'}>Report</MenuItem>
+                                    <MenuItem value = {'Article'}>Article</MenuItem>
+                                    <MenuItem value = {'Other'}>Other</MenuItem>
 
-                    <TextField
-                    type = "file"
-                    onChange={handleFileChange}
-                    key = {fileResetKey}/>
-                    <Button variant = "contained" type = "submit" value = "Submit">Submit</Button>
-                </form>
+                                    </Select>
+                                    <FormHelperText>What are you sharing?</FormHelperText>
+                                </FormControl>
+                            </Box>
+                            <Button variant = "contained" type = "submit" value = "Submit" sx = {{width: '20%', marginLeft: '40%', marginTop: '2%', marginBottom: '2%'}}>Submit</Button>
+                        </Box>
+                    </form>
+                </Paper>
                 
             </>
             

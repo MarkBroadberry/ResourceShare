@@ -40,9 +40,10 @@ const useStyles = makeStyles((theme) => ({
           <MenuItem component={Link} to = "/home">
             My Courses
           </MenuItem>
+          {/*}
           <MenuItem component={Link} to = "/uploads">
             My Uploads
-          </MenuItem>
+           </MenuItem>*/}
           <MenuItem component={Link} to = "/Saved">
             Saved Resources
           </MenuItem>
