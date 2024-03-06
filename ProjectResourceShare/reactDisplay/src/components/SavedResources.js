@@ -27,7 +27,6 @@ export default function SavedResources(){
         const [isLoading, setIsLoading] = useState(true);
         //ids of reasources with the saved icon active - starts as all resources for obvious reasons.
         const [savedIconActiveResources, setsavedIconActiveResources] = useState([]);
-        //const [savedResources, setSavedResources] = useState([]);
 
         const location = useLocation();
         const navigate = useNavigate();
@@ -36,7 +35,6 @@ export default function SavedResources(){
 
         const responsive = {
             LargeDesktop: {
-              // the naming can be any, depends on you.
               breakpoint: { max: 4000, min: 3000 },
               items: 5
             },

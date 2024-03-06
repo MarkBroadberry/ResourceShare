@@ -31,7 +31,7 @@ export default function Homepage(){
     // for Carousel component - defines how many modules are shown in the module component for diff resoultions. 
     const responsive = {
         LargeDesktop: {
-          // the naming can be any, depends on you.
+
           breakpoint: { max: 4000, min: 3000 },
           items: 6
         },
@@ -105,7 +105,7 @@ export default function Homepage(){
        })
     }
 
-    const handleRedirect = (chosenModule) => navigate('/ModuleResources',{state: chosenModule/*{id: chosenModule.id, name: chosenModule.name}*/})
+    const handleRedirect = (chosenModule) => navigate('/ModuleResources',{state: chosenModule})
 
     return(
         <Box sx = {{height: '200vh', display: 'flex', paddingTop: '4.5%'}}>

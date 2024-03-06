@@ -1,13 +1,6 @@
 
 export const RADIUS =20;
 
-//TODO: see if the dependent curvature works & try arrow head direction changes. 
-// Then need to  add a way of changing thickness of line to fit with weight
-// and testing weight aggregation for this. 
-
-
-
-
 function drawArrowhead(context, x, y, angle, radius) {
     //triangle - step back arrow in the x and y by the x and y components of the radius ( R cos theta and R sin theta)
       const newX = x - radius * Math.cos(angle);
@@ -49,7 +42,6 @@ export const drawTrustGraph = (
         commonLinkGroups[combinationKey].push(link);
         
     })
-    //console.log("common link groups: ", commonLinkGroups);
 
   // Iterate through groups of links in the same pair, so that we can alternate the curvature in links next to each other
     Object.values(commonLinkGroups).forEach((linkGroup, groupIndex) => {
@@ -79,31 +71,12 @@ export const drawTrustGraph = (
             const y2 = (target.y - RADIUS) * Math.sin(angle + Math.PI / 6);
             const midpointX = (source.x + target.x) / 2;
             const midpointY = (source.y + target.y) / 2;
-// Draw the curve
-//context.bezierCurveTo(controlX, source.y, controlX, target.y, target.x, target.y);
-//context.stroke();
+
 
             //defines curve behaviour x is set so it curves halfway between points
             const quadraticParamsX =  (source.x + target.x) / 2;
             //change the co-efficient to change steepness of curve
             const quadraticParamsY =  (source.y + target.y) / 2 + 100;
-
-            /*DEBUG: Plot control points
-            context.beginPath();
-            context.arc(quadraticParamsX, quadraticParamsY, 5, 0, Math.PI * 2);
-            context.fillStyle = 'red';
-            context.fill();
-
-            context.fillStyle = '#000';
-            context.font = '12px Arial'; 
-            context.textAlign = 'center';
-            context.textBaseline = 'middle';
-            //subtract from y coord for label to be underneath node 
-            context.fillText(`${quadraticParamsX},${quadraticParamsY}`, quadraticParamsX, quadraticParamsY); 
-
-            console.log(`control points: (${quadraticParamsX},${quadraticParamsY}`)
-            */
-
 
             //This calculates the direction that the arrowhead for curves should go by taking the gradient between the node and the control point (which defines the curve)
             //so you get an arrowhead that is approximately on the direction of the curve
@@ -134,14 +107,13 @@ export const drawTrustGraph = (
               
             }else{
               context.quadraticCurveTo(quadraticParamsX,quadraticParamsY, target.x, target.y);
-              //context.arc(midpointX, midpointY, arcRadius, Math.PI - angle, Math.PI);
+              
               context.stroke();
 
               const curveDy = Math.abs(target.y - quadraticParamsY)
               const curveDx = Math.abs(target.x - quadraticParamsX)
               const curveAngle = Math.atan2(curveDy, curveDx) + Math.PI;
-              /*console.log(`arrow for ${target.id} is facing (${quadraticParamsX}, ${quadraticParamsY})`);
-              console.log(`arrow for link ${source.id} to ${target.id}`);*/
+              
               drawArrowhead(context, target.x, target.y, curveAngle, RADIUS, link.width);
             }
             
@@ -157,7 +129,7 @@ export const drawTrustGraph = (
       return;
     }
 
-    //console.log(`node: (${node.x}, ${node.y}`);
+    
     context.beginPath();
     context.moveTo(node.x + RADIUS, node.y);
     context.arc(node.x, node.y, RADIUS, 0, 2 * Math.PI);

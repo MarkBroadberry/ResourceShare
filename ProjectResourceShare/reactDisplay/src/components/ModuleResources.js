@@ -49,11 +49,6 @@ export default function ModuleResources(){
         const [isLoading, setIsLoading] = useState(true);
         const [type, setType] = useState("");
 
-      
-        
-
-        //const [ratings, setRatings] = useState([]);
-        //const [userRatedResources, setUserRatedResources] = useState([]);
 
 
         const responsive = {
@@ -101,7 +96,7 @@ export default function ModuleResources(){
                 console.log("resources: ", response.data);
                 setResources(response.data);
                 setIsLoading(false);
-                /*myAxiosInstance.get('getUserDetail')*/
+                
             })
             .catch((error) =>{
                 console.error("error fetching resources data: ", error);
@@ -117,7 +112,6 @@ export default function ModuleResources(){
                     for(let i = 0; i < response.data.length; i++){
                             setSavedResources(prev => [...prev, response.data[i].resource.id]);
                     }
-                    //setSavedResources(response.data)
                     console.log("just ids list: ", savedResources);
                 }).catch((error)=>{
                     console.log("error occured fetching saved resources: ", error)

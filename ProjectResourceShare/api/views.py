@@ -111,18 +111,6 @@ class GetUserDetailView(APIView):
         except user.DoesNotExist:
             return Response({"error": "user not found"}, status = status.HTTP_404_NOT_FOUND)
 
-'''   
-class GetSpecifiedUserDetail(APIView):
-    serializer_class = UserSerializer
-    def get(self, request, userId):
-        try:
-            users = CustomUser.objects.filter(user=userId).select_related('author')
-            serializer = self.serializer_class(resources, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        except Exception as e:
-            logger.error(f"An error occurred: {e}")
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-            '''
         
 class CreateModuleView(APIView):
     def post(self, request):
@@ -192,7 +180,6 @@ class DownloadPDFView(APIView):
     
 #gets ratings based on a resource in the url
 class RatingView(APIView):
-    #serializer_class = RatingSerializer
 
     def get(self, request, resourceId):
         ratings = Rating.objects.filter(resource = resourceId)

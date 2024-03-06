@@ -16,14 +16,13 @@ function enroll(moduleId){
 
 export default function ModuleSearch({dataList, enrolledModules, height}) {
     const [searchValue,setSearchValue] = useState("");
-   // const [userModuleIds, setUserModuleIds] = useState([]);
+
 
     const filteredModules = dataList.filter(module => {return (
         module.name.toLowerCase().includes(searchValue.toLowerCase()) 
     )} )
 
     
-    /*const filteredModules = [{'name': "test1", 'university': "uOB"}, {'name': "test2", 'university': "uOB2"}]*/
 
     function searchList(){
         const displayFilter = filteredModules.map(function(module){
