@@ -161,7 +161,7 @@ export default function SavedResources(){
                                                     </Button>
                                                 </Box>
                                             </Box>
-                                            <img src={typeImages[savedResource.resource.type]} className='resourceImage'/>
+                                            <img src={typeImages[savedResource.resource.type].image} className='resourceImage'/>
                                             <Box sx = {{display: 'flex' ,justifyContent: 'space-between'}}>
                                                 <Box>
                                                     <Stack direction = "row" alignItems= "center" spacing={1}>

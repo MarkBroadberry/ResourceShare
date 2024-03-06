@@ -1,5 +1,5 @@
 
-export const RADIUS =30;
+export const RADIUS =20;
 
 //TODO: see if the dependent curvature works & try arrow head direction changes. 
 // Then need to  add a way of changing thickness of line to fit with weight
@@ -167,11 +167,21 @@ export const drawTrustGraph = (
     
     //label the nodes with the users names
     context.fillStyle = '#000';
-    context.font = '12px Arial'; 
+    context.font = '10px Arial'; 
     context.textAlign = 'center';
     context.textBaseline = 'middle';
     //subtract from y coord for label to be underneath node (-RADIS - Constant)
-    context.fillText(node.name, node.x, node.y); 
+    const splitNames = node.name.split(' ');
+    const firstName = splitNames[0];
+    const lastName = splitNames.slice(1).join(' ');
+    //joins back multiple last names
+    const topY = node.y - 6;
+    const bottomY = node.y + 6;
+
+    context.fillText(firstName, node.x, topY); 
+    context.fillText(lastName, node.x, bottomY); 
+
+
     
   });
 

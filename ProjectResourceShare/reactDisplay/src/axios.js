@@ -4,7 +4,7 @@ console.log("axios instance, access: ", localStorage.getItem("accessToken"));
 
 const myAxiosInstance = axios.create({
     baseURL: baseURL,
-    timeout: 7500,
+    timeout: 15000,
     headers:{
         Authorization : localStorage.getItem("accessToken") ? "Bearer " + localStorage.getItem("accessToken") : null,
         'Content-Type': 'application/json',

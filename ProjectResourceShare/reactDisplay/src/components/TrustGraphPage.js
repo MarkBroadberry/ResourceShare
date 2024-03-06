@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react'
 import TrustGraph from './subComponents/TrustGraph';
 import { Box, Typography } from '@material-ui/core';
 import myAxiosInstance from '../axios';
+import { CircularProgress } from '@material-ui/core';
 
 export default function TrustGraphPage() {
 
     const [nodes, setNodes] = useState([]);
     const [links, setLinks] = useState([]);
     const [averagedWeights, setAveragedWeights] = useState({});
+    const [isLoading, setIsLoading] = useState(true);
 
     function aggregatedTrustRelationships(data){
         const aggregatedData = {};
@@ -130,15 +132,23 @@ export default function TrustGraphPage() {
     useEffect(()=>{
         console.log("Links", links);
         console.log("Nodes", nodes);
+        if(nodes.length > 0){
+            setIsLoading(false);
+        }
     }, [links, nodes])
 
     const width = 1000;
-    const height = 1500;
+    const height = 1000;
   
   return (
         <Box >
             
             <Typography variant = "h2" style = {{marginTop: '7%'}}>Trust Graph</Typography>
+            {isLoading && (
+            <Box style = {{width: '25%' , paddingLeft:'48%'}}>
+                <CircularProgress size={100}/>
+            </Box>
+            )}
             <Box>
                 <TrustGraph  nodes = {nodes} links = {links} width = {width} height = {height}/>
             </Box>

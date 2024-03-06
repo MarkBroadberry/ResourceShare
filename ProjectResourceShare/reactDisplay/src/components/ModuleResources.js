@@ -2,7 +2,7 @@ import React, { Component, useEffect } from 'react';
 import {useState} from 'react';
 import { useLocation, useNavigate } from "react-router-dom";
 import myAxiosInstance from '../axios';
-import { Button, TextField, Card, CardContent, CardActions, Typography, Box, Paper, FormControl, InputLabel, Select, MenuItem, FormHelperText } from '@mui/material';
+import { Button, TextField, Card, CardContent, CardActions, Typography, Box, Paper, FormControl, InputLabel, Select, MenuItem, FormHelperText, Divider } from '@mui/material';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import Stack from '@mui/material/Stack';
@@ -20,22 +20,22 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 //Images
 export const typeImages = {
-    LectureNotes: '../../static/images/LectureNotes.jpg',
-    Essay: '../../static/images/Essay.jpg',
-    Code: '../../static/images/Code.jpg',
-    Presentation: '../../static/images/Presentation.jpg',
-    FlashCards: '../../static/images/FlashCards.jpg',
-    Spreadsheet: '../../static/images/Spreadsheet.jpg',
-    Graph: '../../static/images/Graph.jpg',
-    Diagram: '../../static/images/Diagram.jpg',
-    Image: '../../static/images/Image.jpg',
-    PastPaper: '../../static/images/PastPaper.jpg',
-    ExamMarkScheme: '../../static/images/ExamMarkScheme.jpg',
-    RevisionNotes: '../../static/images/RevisionNotes.jpg',
-    Report: '../../static/images/Report.jpg',
-    Article: '../../static/images/Article.jpg',
-    Other: '../../static/images/Other.jpg'
-  };
+    LectureNotes: { image: '../../static/images/LectureNotes.jpg', type: 'Lecture Notes' },
+    Essay: { image: '../../static/images/Essay.jpg', type: 'Essay' },
+    Code: { image: '../../static/images/Code.jpg', type: 'Code' },
+    Presentation: { image: '../../static/images/Presentation.jpg', type: 'Presentation' },
+    FlashCards: { image: '../../static/images/FlashCards.jpg', type: 'Flash Cards' },
+    Spreadsheet: { image: '../../static/images/Spreadsheet.jpg', type: 'Spreadsheet' },
+    Graph: { image: '../../static/images/Graph.jpg', type: 'Graph' },
+    Diagram: { image: '../../static/images/Diagram.jpg', type: 'Diagram' },
+    Image: { image: '../../static/images/Image.jpg', type: 'Image' },
+    PastPaper: { image: '../../static/images/PastPaper.jpg', type: 'Past Paper' },
+    ExamMarkScheme: { image: '../../static/images/ExamMarkScheme.jpg', type: 'Exam Mark Scheme' },
+    RevisionNotes: { image: '../../static/images/RevisionNotes.jpg', type: 'Revision Notes' },
+    Report: { image: '../../static/images/Report.jpg', type: 'Report' },
+    Article: { image: '../../static/images/Article.jpg', type: 'Article' },
+    Other: { image: '../../static/images/Other.jpg', type: 'Other' }
+};
 
 export default function ModuleResources(){
         const [fileName, setFileName] = useState("");
@@ -155,6 +155,7 @@ export default function ModuleResources(){
                     setFile([]);
                     setFileDescription("");
                     setFileName("");
+                    setType("");
                     setFileResetKey(key => key + 1);
                     console.log("file post success!");
                 })
@@ -252,7 +253,9 @@ export default function ModuleResources(){
                                                     </Button>
                                                 </Box>
                                             </Box>
-                                            <img src = {typeImages[resource.type]} className='resourceImage'/>
+                                            <img src = {typeImages[resource.type].image} className='resourceImage'/>
+                                            <Typography sx = {{fontSize: 14}} color = "text.secondary">{typeImages[resource.type].type}</Typography>
+                                            <Divider/>
 
                                             <Box sx = {{display: 'flex' ,justifyContent: 'space-between'}}>
                                                 <Box>

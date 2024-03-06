@@ -3,6 +3,8 @@ import * as d3 from "d3"
 import '../../../static/css/index.css';
 import { RADIUS, drawTrustGraph } from './DrawTrustGraph';
 
+
+
 const TrustGraph = ({nodes, links, width, height}) => {
  
     const canvasRef = useRef(null);
@@ -37,6 +39,7 @@ const TrustGraph = ({nodes, links, width, height}) => {
   
     return (
       <div>
+
         <canvas
           ref={canvasRef}
           style={{
