@@ -2,7 +2,7 @@ import React, { Component, useEffect } from 'react';
 import {useState} from 'react';
 import { useLocation, useNavigate } from "react-router-dom";
 import myAxiosInstance from '../axios';
-import { Button, TextField, Card, CardContent, CardActions, Typography, Box } from '@mui/material';
+import { Button, TextField, Card, CardContent, CardActions, Typography, Box, Divider } from '@mui/material';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import Stack from '@mui/material/Stack';
@@ -160,6 +160,8 @@ export default function SavedResources(){
                                                 </Box>
                                             </Box>
                                             <img src={typeImages[savedResource.resource.type].image} className='resourceImage'/>
+                                            <Typography sx = {{fontSize: 14}} color = "text.secondary">{typeImages[savedResource.resource.type].type}</Typography>
+                                            <Divider/>
                                             <Box sx = {{display: 'flex' ,justifyContent: 'space-between'}}>
                                                 <Box>
                                                     <Stack direction = "row" alignItems= "center" spacing={1}>

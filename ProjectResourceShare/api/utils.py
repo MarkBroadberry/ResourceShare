@@ -148,7 +148,7 @@ def CalculateTransativeTrust(originalWeight, userId, trusteeId):
 			if myRelationship['trustee'] == i['trustor']:
 				transativeWeights.append({'trustedPerson': myRelationship['trustee'], 'myTrust': myRelationship['averageWeight'], 'transativeTrust': i['averageWeight']})
 	
-	transativeTrust =0
+	transativeTrust = 0
 
 	#trust threshold is the value at which we 'trust' someone
 	trustThreshold = 2.5
@@ -164,12 +164,12 @@ def CalculateTransativeTrust(originalWeight, userId, trusteeId):
 		if thisWeight['myTrust'] >= trustThreshold:
 			transativeTrust += w1 * (float(thisWeight['myTrust']) * float(thisWeight['transativeTrust'])) / 5
 		else:
-			transativeTrust =+ w1 * (-1 * float(thisWeight['myTrust']) * float(thisWeight['transativeTrust'])) / 5
+			transativeTrust += w1 * (-1 * float(thisWeight['myTrust']) * float(thisWeight['transativeTrust'])) / 5
 			if transativeTrust < 1:
 				#dont allow negative trust values
 				transativeTrust = 0
 
-	totalTrust = round(w0 * float(originalWeight) + float(transativeTrust), 2)
+	totalTrust = round(w0 * float(originalWeight) + w1 * float(transativeTrust), 2)
 
 	return totalTrust
 
