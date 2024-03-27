@@ -14,7 +14,7 @@ from rest_framework.serializers import ValidationError
 from django.core.files import File
 from django.http import HttpResponse
 from ProjectResourceShare.settings import MEDIA_ROOT
-from .utils import CalculateTrustRating, RecalculateTrustRating, IncrementDownloadCount, CalculateTransativeTrust
+from .utils import CalculateTrustRating, RecalculateTrustRating, IncrementDownloadCount, CalculatePropagativeTrust
 
 # Create your views here.
 import logging
@@ -247,7 +247,7 @@ class TrustRelationshipView(APIView):
             weight = request.data.get('weight')
             trustor = request.data.get('trustor')
             trustee = request.data.get('trustee')
-            transativeTrust = CalculateTransativeTrust(weight, trustor, trustee)
+            transativeTrust = CalculatePropagativeTrust(weight, trustor, trustee)
             request.data['weight'] = transativeTrust
             serializer = CreateTrustRelationshipSerializer(data=request.data)
             
