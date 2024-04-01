@@ -85,61 +85,57 @@ def CalculateRatingDeviance(userId):
 
 
 def CalculatePropagativeTrust(originalWeight, userId, trusteeId):
-	#get all of the authorized user's trust relationships
+	#Retrieve and aggregate all of the authorized user's trust relationships
 	myTrustRelationships = aggregateTrustRelationships(TrustRelationship.objects.filter(trustor = userId))
-	relevantPropagativeRelationships = []
-	'''array of objects, each object contains:
-	  the person that I trust,
-	  the weight of my trust for them,
-	  the weight that they trust the person I am about to create a trust relationship with'''
-
-	propagativeWeights = []
+	#Array for all of a neighbours relationships
 	trusteeRelationships = []
+	#Array for relationships between neighbour and target user
+	relevantPropagativeRelationships = []
+	#array of objects with values: relevant neighbour, user-to-neighbour trust, neighbour-to-target user trust
+	propagativeWeights = []
 
+	#Iterate through authorized user's trust relationships to get all neighbours relationships.
 	for trustRelationshipKey in myTrustRelationships:
 		trustRelationship = myTrustRelationships[trustRelationshipKey]
-		#we are now iterating through values instead of keys->  in aggregated trust relationship form
-
-		#From the people that I 'trust', get all of their their relationships
-		trusteeRelationships.append(aggregateTrustRelationships(TrustRelationship.objects.filter(trustor = trustRelationship['trustee'])))
+		#Now Iterating through values instead of keys: Values are in aggregated trust relationship form.
+		#From the people that I 'trust', get all of their their relationships.
+		trusteeRelationships.append(
+			aggregateTrustRelationships(TrustRelationship.objects.filter(trustor = trustRelationship['trustee'])))
 		
-	#from all of their relationships, get the relevant ones (related to the trustee the user about to 'trust')
-	#for each user's trust relationships (which is a set of trust rels)
+	#From all of a neighbours relationships, filter to the relevant ones (related to the target user)
 	for trustedUser in trusteeRelationships:
 		for compositeKey in trustedUser:
 			if trustedUser[compositeKey]['trustee'].id == trusteeId:
 				relevantPropagativeRelationships.append(trustedUser[compositeKey])
 	
+	#encapsulate propagative relationships in an array of objects.
 	for i in relevantPropagativeRelationships:
+			#iterate through user's relationships to get weight of user-to-neighbour relationships.
 		for compKey in myTrustRelationships:
 			myRelationship = myTrustRelationships[compKey]
-			#iterate throughy original aggregated objects of all my relationships 
-			#match the users in this new relevant transatvie relationships array, and get the weights of both.
 			if myRelationship['trustee'] == i['trustor']:
-				propagativeWeights.append({'trustedPerson': myRelationship['trustee'], 'myTrust': myRelationship['averageWeight'], 'propagativeTrust': i['averageWeight']})
-	
+				propagativeWeights.append({'trustedPerson': myRelationship['trustee'],
+							    		   'myTrust': myRelationship['averageWeight'],
+								     	   'propagativeTrust': i['averageWeight']})
 	propagativeTrust = 0
-
 	#trust threshold is the value at which we 'trust' someone
 	trustThreshold = 2.5
-
 	#w0 is the weighting we give to the original weight from the trust interaction. 
 	w0 = 0.7
-
 	#w1 is the weighting we give to the propagative trust of the other nodes. 
 	w1 = 0.3
-
 	for thisWeight in propagativeWeights:
-
 		if thisWeight['myTrust'] >= trustThreshold:
-			propagativeTrust += w1 * (float(thisWeight['myTrust']) * float(thisWeight['propagativeTrust'])) / 5
+			propagativeTrust += (float(thisWeight['myTrust']) * float(thisWeight['propagativeTrust'])) / 5
+			#division by 5 to normalise value to the range 0 to 5 after multiplication
 		else:
-			propagativeTrust += w1 * (-1 * float(thisWeight['myTrust']) * float(thisWeight['propagativeTrust'])) / 5
-			if propagativeTrust < 1:
-				#dont allow negative trust values
-				propagativeTrust = 0
+			propagativeTrust += (-1 * float(thisWeight['myTrust']) * float(thisWeight['propagativeTrust'])) / 5
 
-	totalTrust = round(w0 * float(originalWeight) + w1 * float(propagativeTrust), 2)
+	propagativeTrust = propagativeTrust / len(propagativeWeights)
+	totalTrust = w0 * float(originalWeight) + w1 * float(propagativeTrust)
+	if totalTrust < 0:
+		totalTrust = 0
+	totalTrust = round(totalTrust, 2)
 
 	return totalTrust
 

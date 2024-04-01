@@ -43,6 +43,8 @@ class Resource(models.Model):
     module = models.ForeignKey(Module, on_delete=models.CASCADE)
     author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     type = models.TextField(max_length = 512, default = 'Other')
+    def __str__(self):
+        return self.name
 
 class Rating(models.Model):
     resource = models.ForeignKey(Resource, on_delete=models.CASCADE)

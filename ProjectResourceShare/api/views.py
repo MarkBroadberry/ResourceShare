@@ -146,7 +146,10 @@ class ResourcesForModuleView(APIView):
         try:
             resources = Resource.objects.filter(module=moduleId).prefetch_related('author')
             serializer = self.serializer_class(resources, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            if len(serializer.data) > 0:
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response("No resources found for this module.", status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
             logger.error(f"An error occurred: {e}")
             return Response(status=status.HTTP_400_BAD_REQUEST)
