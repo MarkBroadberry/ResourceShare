@@ -173,12 +173,12 @@ export default function Homepage(){
                     
                         <Paper elevation = {2} sx = {{marginLeft: '3%', marginTop: '3%', textAlign: 'center', height: '90%', border: 1}}>
                             <form onSubmit = {AddModuleFormSubmit}>
-                                <Typography sx = {{fontWeight: 'bold'}}>Can't Find Your Modules? Add One!</Typography>
+                                <Typography sx = {{fontWeight: 'bold'}} name = "addModule">Can't Find Your Modules? Add One!</Typography>
                                 <TextField
                                 label = "Type your Module Name"
                                 value = {moduleName}
                                 onChange = {(e)=> setModuleName(e.target.value)} ></TextField>
-                                <Button sx= {{ width: '20%', marginLeft: '20%' ,marginTop:'5%'}}variant='contained' type = "submit">Add</Button>
+                                <Button sx= {{ width: '20%', marginLeft: '20%' ,marginTop:'5%'}}variant='contained' type = "submit" className = "AddNewModuleButton">Add</Button>
                             </form>
                         </Paper>
                     </Box>

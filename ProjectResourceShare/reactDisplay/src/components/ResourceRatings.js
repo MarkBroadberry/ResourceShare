@@ -127,7 +127,7 @@ export default function ResourceRatings() {
                     onChange = {(e)=> setRatingComment(e.target.value)}
                     />
 
-                    <Button variant = 'contained' type = "submit">Rate</Button>
+                    <Button variant = 'contained' type = "submit" className = "rateButton">Rate</Button>
                 </form>
             </Box>
             )

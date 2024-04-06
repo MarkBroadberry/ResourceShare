@@ -73,6 +73,7 @@ export default function Login(){
                 
                         <Button
                             type = "submit"
+                            name = "login"
                             className = "LoginButton">
                             Login
                         </Button>
