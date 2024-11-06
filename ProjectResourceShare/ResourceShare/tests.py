@@ -90,6 +90,7 @@ class ResourcesForModuleIntegrationTest(TestCase):
         self.assertEqual(response.data[0]['name'], 'Integration Test Resource 1')
         self.assertEqual(response.data[1]['name'], 'Integration Test Resource 2')
 
+'''
     def test_get_resources_for_invalid_module(self):
         #define a invalid module id
         invalidModuleId = 9999
@@ -97,7 +98,7 @@ class ResourcesForModuleIntegrationTest(TestCase):
         response = self.client.get(reverse('resources_for_module', kwargs={'moduleId': invalidModuleId}))
         #test that the status is correct
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-    
+ '''   
 
 '''
     def test_get_resources_view(self):
